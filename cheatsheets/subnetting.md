@@ -7,7 +7,7 @@
  * /27 = 32 IPs
  * /28 = 16 IPs
 
-* CIDR refers to a method used to allocate IP addresses and route internet traffic.
+👉 CIDR refers to a method used to allocate IP addresses and route internet traffic.
 
 ---
 
