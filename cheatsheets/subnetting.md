@@ -1,11 +1,11 @@
 # SUBNETTING CHEATSHEET
 
 ## CIDR
-/24 = 256 IPs
-/25 = 128 IPs
-/26 = 64 IPs
-/27 = 32 IPs
-/28 = 16 IPs
+ /24 = 256 IPs
+ /25 = 128 IPs
+ /26 = 64 IPs
+ /27 = 32 IPs
+ /28 = 16 IPs
 
 ---
 
