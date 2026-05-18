@@ -1,11 +1,5 @@
 # TCP vs UDP
 
-## Common Ports
-- 80 = HTTP
-- 443 = HTTPS
-- 22 = SSH
-- 53 = DNS
-
 * TCP vs UDP
 * Ports:
 
