@@ -18,16 +18,6 @@ Example:
 
 👉 Subnet mask defines network boundary
 
-
-## Structure
-Example:
-192.168.1.10/24
-
-- Network: 192.168.1.0
-- Host: .10
-
----
-
 ## Key Terms
 - IP = device address
 - Subnet mask = defines network boundary
