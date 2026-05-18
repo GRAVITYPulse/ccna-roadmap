@@ -21,7 +21,7 @@ Hosts = 2^n - 2
 
 ## Subnetting Reference Guide
 
-Subnet Mask,       |    CIDR,  |                 Binary Notation,              |   Available Addresses
+Subnet Mask        |    CIDR   |                 Binary Notation               |   Available Addresses
 -------------------|-----------|-----------------------------------------------|--------------------------
 255.255.255.255    |     /32   |      11111111.11111111.11111111.11111111      |           1
 255.255.255.254    |     /31   |      11111111.11111111.11111111.11111110      |           2
