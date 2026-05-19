@@ -1,4 +1,25 @@
-# Week 1 Review Lab
+# 🔥 WEEK 1 INTEGRATION LAB
+
+## 📖 Study Lesson
+
+- Full packet flow review
+- OSI + IP + MAC interaction
+- Troubleshooting methodology
+
+---
+
+## 🧪 Packet Tracer Labs
+
+- 17.7.7 Packet Tracer - Troubleshoot Connectivity Issues
+- 17.8.2 Packet Tracer - Skills Integration Challenge
+
+---
+
+## 🎯 Lab Objectives
+
+- Build full topology from scratch
+- Break and fix connectivity issues
+- Verify end-to-end communication
 
 * OSI Model
 * TCP/UDP

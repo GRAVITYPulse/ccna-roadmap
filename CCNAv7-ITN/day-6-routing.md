@@ -1,4 +1,26 @@
-# Routing Basics
+# 🧭 ROUTING BASICS
+
+## 📖 Study Lesson
+
+- Router function (inter-networking)
+- Routing table basics
+- Connected routes (C)
+- Default gateway behavior
+
+---
+
+## 🧪 Packet Tracer Labs
+
+- 10.1.4 Packet Tracer - Configure Initial Router Settings
+- 10.3.5 Packet Tracer - Troubleshoot Default Gateway Issues
+
+---
+
+## 🎯 Lab Objectives
+
+- Configure router interfaces
+- Verify routing table
+- Fix gateway misconfigurations
 
 ## What is a Router?
 Device that connects different networks

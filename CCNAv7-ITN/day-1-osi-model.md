@@ -1,4 +1,35 @@
-# OSI MODEL (Foundation)
+# 🧠 OSI MODEL + NETWORK REPRESENTATION
+
+## 📖 Study Lesson
+
+- OSI 7 layers and functions
+- TCP/IP model mapping
+- Encapsulation and decapsulation
+- PDU types:
+  - Bits (Layer 1)
+  - Frames (Layer 2)
+  - Packets (Layer 3)
+  - Segments (Layer 4)
+- Device roles:
+  - Switch → Layer 2
+  - Router → Layer 3
+
+---
+
+## 🧪 Packet Tracer Labs
+
+- 1.5.7 Packet Tracer - Network Representation
+- 3.5.5 Packet Tracer - TCP/IP and OSI Models in Action
+
+---
+
+## 🎯 Lab Objectives
+
+- Trace packet flow in Simulation Mode
+- Identify OSI layer transitions
+- Observe encapsulation/decapsulation
+
+--- 
 
 ## Why It Matters
 - Helps troubleshoot networks

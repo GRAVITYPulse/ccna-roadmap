@@ -1,4 +1,26 @@
-# IPv4 Addressing
+# 🌐 IPv4 ADDRESSING
+
+## 📖 Study Lesson
+
+- IPv4 structure (network vs host)
+- Subnet mask purpose
+- Default gateway role
+- Private IP ranges
+
+---
+
+## 🧪 Packet Tracer Labs
+
+- 2.9.1 Packet Tracer - Basic Switch and End Device Configuration
+- 10.3.4 Packet Tracer - Connect a Router to a LAN
+
+---
+
+## 🎯 Lab Objectives
+
+- Assign static IP addresses
+- Configure default gateway
+- Test same-network connectivity
 
 * IP structure
 * Network vs Host

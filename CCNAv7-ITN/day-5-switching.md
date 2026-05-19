@@ -1,4 +1,26 @@
-# Switching Basics
+# 🔁 SWITCHING (MAC LEARNING)
+
+## 📖 Study Lesson
+
+- MAC address table (CAM table)
+- MAC learning process
+- Flooding behavior
+- Broadcast vs collision domain
+
+---
+
+## 🧪 Packet Tracer Labs
+
+- 2.5.5 Packet Tracer - Configure Initial Switch Settings
+- 9.1.3 Packet Tracer - Identify MAC and IP Addresses
+
+---
+
+## 🎯 Lab Objectives
+
+- Observe MAC learning
+- Trigger flooding with unknown MAC
+- Verify MAC table updates
 
 ## What is a Switch?
 A device that connects devices in a LAN using MAC addresses

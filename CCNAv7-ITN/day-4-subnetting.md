@@ -1,4 +1,26 @@
-# Subnetting Basics
+# 🧮 SUBNETTING
+
+## 📖 Study Lesson
+
+- CIDR (/24, /25, /26)
+- Network, broadcast, host range
+- Subnet calculation steps
+- Basic VLSM concept
+
+---
+
+## 🧪 Packet Tracer Labs
+
+- 11.5.5 Packet Tracer - Subnet an IPv4 Network
+- 11.7.5 Packet Tracer - Subnetting Scenario
+
+---
+
+## 🎯 Lab Objectives
+
+- Compute subnets manually
+- Assign correct IP ranges
+- Validate network segmentation
 
 ## What is Subnetting?
 Splitting one network into smaller networks

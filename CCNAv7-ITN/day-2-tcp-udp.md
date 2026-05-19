@@ -1,4 +1,32 @@
-# TCP vs UDP
+# 🔗 TCP vs UDP + PORTS
+
+## 📖 Study Lesson
+
+- TCP vs UDP comparison
+- TCP 3-way handshake:
+  - SYN
+  - SYN-ACK
+  - ACK
+- Common ports:
+  - 80 HTTP
+  - 443 HTTPS
+  - 22 SSH
+  - 53 DNS
+
+---
+
+## 🧪 Packet Tracer Labs
+
+- 14.8.1 Packet Tracer - TCP and UDP Communications
+- 2.7.6 Packet Tracer - Implement Basic Connectivity
+
+---
+
+## 🎯 Lab Objectives
+
+- Compare TCP vs UDP traffic behavior
+- Observe handshake in Simulation Mode
+- Identify port-based communication
 
 * TCP vs UDP
 * Ports:
