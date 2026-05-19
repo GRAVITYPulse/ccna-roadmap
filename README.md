@@ -1,4 +1,4 @@
-# ccna-study-journal
+# CCNAv7-roadmap
 
 # CCNA v7 Networking Study Roadmap (ITN → SRWE → ENSA)
 
