@@ -72,3 +72,17 @@ PC:
 ```
 ping 192.168.1.1
 ```
+
+# 🧪 LABS – TCP / UDP
+
+## Packet Tracer Activities
+
+- 14.8.1 Packet Tracer - TCP and UDP Communications
+- 2.7.6 Packet Tracer - Implement Basic Connectivity
+
+## Practice Tasks
+
+- Compare TCP vs UDP traffic in Simulation Mode
+- Observe 3-way handshake (SYN, SYN-ACK, ACK)
+- Test ping vs UDP-style traffic behavior
+- Identify ports used in communication

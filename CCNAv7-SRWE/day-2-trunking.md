@@ -47,3 +47,16 @@ switchport mode trunk
 * VLANs pass between switches
 
 ---
+
+# 🧪 LABS – TRUNKING
+
+## Packet Tracer Activities
+
+- VLAN Trunking configuration practice labs
+
+## Practice Tasks
+
+- Configure trunk port (802.1Q)
+- Connect 2 switches via trunk
+- Allow multiple VLANs across switches
+- Verify VLAN propagation

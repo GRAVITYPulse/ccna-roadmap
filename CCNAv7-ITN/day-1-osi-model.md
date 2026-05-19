@@ -77,3 +77,16 @@ show mac address-table
 
 ---
 
+# 🧪 LABS – OSI MODEL
+
+## Packet Tracer Activities
+
+- 3.5.5 Packet Tracer - Investigate the TCP-IP and OSI Models in Action
+- 1.5.7 Packet Tracer - Network Representation
+
+## Practice Tasks
+
+- Identify device roles (PC, switch, router)
+- Trace packet movement step-by-step
+- Observe encapsulation and decapsulation
+- Open Simulation Mode and track PDU flow

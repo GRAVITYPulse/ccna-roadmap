@@ -46,3 +46,16 @@ ping google.com
 * DNS converts name to IP
 
 ---
+
+# 🧪 LABS – DNS
+
+## Packet Tracer Activities
+
+- DNS configuration and resolution lab
+
+## Practice Tasks
+
+- Configure DNS server
+- Map domain → IP
+- Test name resolution
+- Ping domain names instead of IPs

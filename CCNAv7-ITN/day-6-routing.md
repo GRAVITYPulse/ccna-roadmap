@@ -57,3 +57,17 @@ show ip route
 * C → Connected routes
 
 ---
+
+# 🧪 LABS – ROUTING BASICS
+
+## Packet Tracer Activities
+
+- 10.1.4 Packet Tracer - Configure Initial Router Settings
+- 10.3.5 Packet Tracer - Troubleshoot Default Gateway Issues
+
+## Practice Tasks
+
+- Configure router interfaces
+- Assign IP addresses to router ports
+- Test routing between networks
+- Fix incorrect gateway issues

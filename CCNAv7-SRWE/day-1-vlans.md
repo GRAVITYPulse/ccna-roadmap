@@ -81,3 +81,17 @@ switchport access vlan 20
 * PC in VLAN 10 cannot ping PC in VLAN 20
 
 ---
+
+# 🧪 LABS – VLANs
+
+## Packet Tracer Activities
+
+- 4.1.x VLAN Configuration Practice (any VLAN lab variant)
+- 2.9.1 Review VLAN behavior in switches
+
+## Practice Tasks
+
+- Create VLAN 10 and VLAN 20
+- Assign switch ports to VLANs
+- Verify VLAN separation
+- Test inter-VLAN isolation

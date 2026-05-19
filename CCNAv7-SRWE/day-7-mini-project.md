@@ -68,3 +68,19 @@ show ip route
 show ip dhcp binding
 ping between VLANs
 ```
+
+# 🧪 LABS – MINI PROJECT (FULL NETWORK)
+
+## Packet Tracer Activities
+
+- Combined enterprise network simulation
+
+## Practice Tasks
+
+- VLAN setup (10, 20)
+- Trunk between switches
+- Router-on-a-stick
+- DHCP assignment
+- NAT configuration
+- End-to-end connectivity test
+- Full troubleshooting simulation

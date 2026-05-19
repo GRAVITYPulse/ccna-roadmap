@@ -63,3 +63,16 @@ switchport mode trunk
 * Ping between VLANs
 
 ---
+
+# 🧪 LABS – INTER-VLAN ROUTING
+
+## Packet Tracer Activities
+
+- Router-on-a-Stick configuration lab
+
+## Practice Tasks
+
+- Create subinterfaces on router
+- Assign VLAN tags (dot1Q)
+- Enable inter-VLAN communication
+- Test cross-VLAN ping

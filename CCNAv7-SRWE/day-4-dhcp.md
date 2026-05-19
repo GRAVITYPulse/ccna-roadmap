@@ -63,3 +63,16 @@ dns-server 8.8.8.8
 * Set PC to DHCP → gets IP
 
 ---
+
+# 🧪 LABS – DHCP
+
+## Packet Tracer Activities
+
+- DHCP configuration lab
+
+## Practice Tasks
+
+- Configure DHCP pool on router
+- Assign IP dynamically to PCs
+- Verify lease assignment
+- Test renew/release behavior

@@ -81,3 +81,17 @@ no shutdown
 * Ping between networks
 
 ---
+
+# 🧪 LABS – SUBNETTING
+
+## Packet Tracer Activities
+
+- 11.5.5 Packet Tracer - Subnet an IPv4 Network
+- 11.7.5 Packet Tracer - Subnetting Scenario
+
+## Practice Tasks
+
+- Create multiple subnets manually
+- Assign correct IP ranges per subnet
+- Verify communication within subnet only
+- Identify broadcast domains

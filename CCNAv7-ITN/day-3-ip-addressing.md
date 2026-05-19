@@ -48,3 +48,17 @@ Communication within same network
 ```
 ping 192.168.1.3
 ```
+
+# 🧪 LABS – IPv4 ADDRESSING
+
+## Packet Tracer Activities
+
+- 2.9.1 Packet Tracer - Basic Switch and End Device Configuration
+- 10.3.4 Packet Tracer - Connect a Router to a LAN
+
+## Practice Tasks
+
+- Assign static IPs to PCs
+- Configure default gateway
+- Test same-network communication
+- Break and fix IP mismatches

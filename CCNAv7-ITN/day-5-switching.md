@@ -61,3 +61,17 @@ show mac address-table
 * Next ping → Direct forwarding
 
 ---
+
+# 🧪 LABS – SWITCHING
+
+## Packet Tracer Activities
+
+- 2.5.5 Packet Tracer - Configure Initial Switch Settings
+- 9.1.3 Packet Tracer - Identify MAC and IP Addresses
+
+## Practice Tasks
+
+- Observe MAC address table building
+- Trigger MAC learning via ping
+- Check flooding behavior on unknown MAC
+- Verify switchport status

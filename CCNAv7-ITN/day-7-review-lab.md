@@ -87,3 +87,17 @@ show mac address-table
 
 ## Test
 Ping between devices
+
+# 🧪 LABS – WEEK 1 INTEGRATION
+
+## Packet Tracer Activities
+
+- 17.7.7 Packet Tracer - Troubleshoot Connectivity Issues
+- 17.8.2 Packet Tracer - Skills Integration Challenge
+
+## Practice Tasks
+
+- Build full topology from scratch
+- Combine switch + router + PCs
+- Break network intentionally and fix it
+- Verify full end-to-end ping success

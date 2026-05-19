@@ -62,3 +62,16 @@ ip nat inside source list 1 interface g0/1 overload
 * Internal devices can reach external network
 
 ---
+
+# 🧪 LABS – NAT
+
+## Packet Tracer Activities
+
+- NAT Overload (PAT) lab
+
+## Practice Tasks
+
+- Configure inside/outside interfaces
+- Enable NAT overload
+- Test internet simulation access
+- Verify translated IPs
