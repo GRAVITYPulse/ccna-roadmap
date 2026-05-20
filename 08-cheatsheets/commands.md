@@ -24,7 +24,7 @@
 - traceroute
 
  Changing Switch Hostname                       |                       |
---------------------------                      |                       |
+--------------------------                      | ----------------------|
 Switch(config)#hostname SW1                     |                       |
 Configuring Passwords                           |                       |
 SW1(config)#enable secret cisco                 | MD5 hash.             |
