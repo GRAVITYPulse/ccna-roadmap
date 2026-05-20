@@ -59,3 +59,14 @@
 - SW1#wr | Short for write memory
 - Building configuration_
 - [OK]
+
+## Working Environment (name lookup, history, exec-timeout and logging behaviour)
+- SW1(config)#no ip domain-lookup
+- SW1(config)#line vty 0 4
+- SW1(config-line)#history size 15
+- SW1(config-line)#exec-timemout 10 30
+- SW1(config-line)#logging synchronous
+
+## Configuring switch to use SSH
+  - Configure DNS domain name:
+- SW1(config)#
