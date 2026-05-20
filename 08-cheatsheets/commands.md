@@ -5,19 +5,13 @@
 - show running-config
 - show version
 
----
-
 ## Switch
 - show mac address-table
 - show vlan brief
 
----
-
 ## Router
 - show ip route
 - show ip protocols
-
----
 
 ## Troubleshooting
 - ping
