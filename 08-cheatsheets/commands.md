@@ -25,6 +25,8 @@
 
 ---
 
+## Cisco Commands
+
 ## Changing Switch Hostname
 - Switch(config)#hostname SW1
 
