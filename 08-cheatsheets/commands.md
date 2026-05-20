@@ -23,17 +23,14 @@
 - ping
 - traceroute
 
-Changing Switch Hostname | |
--------------------------| -- |
-Switch(config)#hostname SW1 | |
+## Changing Switch Hostname
+Switch(config)#hostname SW1
 
-Configuring Passwords | |
-----------------------| - |
-SW1(config)#enable secret cisco | MD5 hash. |
-SW1(config)#enable password notcisco | Clear text. |
+## Configuring Passwords
+SW1(config)#enable secret cisco         | MD5 hash. |
+SW1(config)#enable password notcisco    | Clear text. |
 
-Securing Console Port | |
-----------------------| - |
-SW1(config)#line con 0 | |
-SW1(config-line)#password cisco | |
-SW1(config-line)#login | |
+## Securing Console Port
+SW1(config)#line con 0
+SW1(config-line)#password cisco
+SW1(config-line)#login
