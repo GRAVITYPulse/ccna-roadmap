@@ -23,9 +23,6 @@
 - ping
 - traceroute
 
- Changing Switch Hostname                       |                       |
---------------------------                      |                       |
-Switch(config)#hostname SW1                     |                       |
-Configuring Passwords                           |                       |
-SW1(config)#enable secret cisco                 | MD5 hash.             |
-SW1(config)#enable password notcisco            | Clear text.           |
+Changing Switch Hostname |
+-------------------------|
+Switch(config)#hostname SW1 | |
