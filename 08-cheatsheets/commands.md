@@ -63,7 +63,7 @@
 - Destination filename [startup-config]?
 - Building configuration_
 - [OK]
-- -
+- //
 - SW1#wr | Short for write memory
 - Building configuration_
 - [OK]
