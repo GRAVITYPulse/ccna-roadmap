@@ -23,6 +23,8 @@
 - ping
 - traceroute
 
+---
+
 ## Changing Switch Hostname
 - Switch(config)#hostname SW1
 
