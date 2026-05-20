@@ -1,24 +1,28 @@
 # CCNA COMMANDS CHEATSHEET
 
 ## General
-show ip interface brief
-show running-config
-show version
+- show ip interface brief
+- show running-config
+- show version
 
 ---
 
 ## Switch
-show mac address-table
-show vlan brief
+- show mac address-table
+- show vlan brief
 
 ---
 
 ## Router
-show ip route
-show ip protocols
+- show ip route
+- show ip protocols
 
 ---
 
 ## Troubleshooting
-ping
-traceroute
+- ping
+- traceroute
+
+ Changing Switch Hostname |
+--------------------------|
+Switch(config)#hostname SW1|
