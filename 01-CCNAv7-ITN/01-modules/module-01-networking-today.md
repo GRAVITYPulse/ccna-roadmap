@@ -16,4 +16,4 @@
 
 ## 🔧 Skills Check
 - Identify devices in topology
-- Understand traffic flow at a high level .
+- Understand traffic flow at a high level
