@@ -12,8 +12,7 @@
 - Basic topology interpretation
 
 ## 🧪 Packet Tracer Labs
-- 1.5.7 Packet Tracer - Network Representation
-- [1.5.7 Packet Tracer - Network Representation](https://github.com/GRAVITYPulse/ccna-roadmap/blob/main/01-CCNAv7-ITN/02-labs/07-packet-tracer-files/1.5.7%20Packet%20Tracer%20-%20Network%20Representation.pka).
+- <a href="[./files/manual.pdf](https://github.com/GRAVITYPulse/ccna-roadmap/blob/main/01-CCNAv7-ITN/02-labs/07-packet-tracer-files/1.5.7%20Packet%20Tracer%20-%20Network%20Representation.pka)" download>Download Manual</a>
 
 ## 🔧 Skills Check
 - Identify devices in topology
