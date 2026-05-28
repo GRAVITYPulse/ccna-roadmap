@@ -168,11 +168,12 @@ A subnet mask divides an IP address into two parts: **Network Portion** and **Ho
 * **IP Address:** 192.168.1.10
 * **Subnet Mask:** 255.255.255.0 (/24)
 
+```text
        Network (24 bits)              Host (8 bits)
 ┌───────────────────────────────┐ ┌───────────┐
 11000000 . 10101000 . 00000001 .   00001010
 
-
+```
 
 ---
 
