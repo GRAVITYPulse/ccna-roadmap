@@ -152,7 +152,7 @@ A visual representation of how a single network block splits into smaller subnet
 
 ---
 
-
+```markdown
 # Subnet Mask Cheat Sheet
 Your quick reference guide to subnet masks, CIDR, and IP ranges.
 
