@@ -1,10 +1,10 @@
-Here is your updated Markdown file with the host IP addressing table (**Part J**) updated to match your diagram's **`.11`** and **`.12`** host assignments, along with the corresponding ACL NAT permit statements (**Part D**) and revalida troubleshooting notes (**Part L**) updated for consistency.
+Here is your updated Markdown file with SSH configurations removed and an Extended Access Control List (ACL) added to restrict VLAN 10 (Sales) from initiating connections to VLAN 20 (IT-ADMIN) and VLAN 93 (MANAGEMENT), while still allowing IT and Management to access Sales and permitting stateful return traffic.
 
 ---
 
 # Production Cisco IOS Configuration Plan & Scripts
 
-**Scope:** Static IP, VLANs, Trunking, Router-on-a-Stick, Rapid-PVST+, OSPF, NAT/PAT, SSH, Switch Security
+**Scope:** Static IP, VLANs, Trunking, Router-on-a-Stick, Rapid-PVST+, OSPF, NAT/PAT, Switch Security, Inter-VLAN ACLs
 
 **Target Platform:** Cisco IOS / IOS-XE / Cisco Packet Tracer Topology
 
@@ -79,15 +79,12 @@ Here is your updated Markdown file with the host IP addressing table (**Part J**
 enable
 configure terminal
 
-! --- Basic Setup & Security ---
+! --- Basic Setup ---
 hostname R-ISP
 no ip domain-lookup
-ip domain-name netadmin.local
 
-! --- Management SSH Credentials ---
+! --- Management Credentials ---
 username admin privilege 15 secret AdminPass123!
-crypto key generate rsa general-keys modulus 2048
-ip ssh version 2
 
 ! --- Interfaces ---
 interface Loopback0
@@ -105,7 +102,6 @@ line con 0
  logging synchronous
  login local
 line vty 0 4
- transport input ssh
  login local
 
 end
@@ -121,15 +117,11 @@ write memory
 enable
 configure terminal
 
-! --- Basic Setup & Domain ---
+! --- Basic Setup ---
 hostname R-EDGE
 no ip domain-lookup
-ip domain-name netadmin.local
 
-! --- Security & SSH ---
 username admin privilege 15 secret AdminPass123!
-crypto key generate rsa general-keys modulus 2048
-ip ssh version 2
 
 ! --- Interfaces ---
 interface Loopback0
@@ -180,7 +172,6 @@ line con 0
  logging synchronous
  login local
 line vty 0 4
- transport input ssh
  login local
 
 end
@@ -196,14 +187,11 @@ write memory
 enable
 configure terminal
 
-! --- Basic Setup & SSH ---
+! --- Basic Setup ---
 hostname R-CORE1
 no ip domain-lookup
-ip domain-name netadmin.local
 
 username admin privilege 15 secret AdminPass123!
-crypto key generate rsa general-keys modulus 2048
-ip ssh version 2
 
 ! --- Interfaces ---
 interface Loopback0
@@ -233,7 +221,6 @@ line con 0
  logging synchronous
  login local
 line vty 0 4
- transport input ssh
  login local
 
 end
@@ -249,14 +236,22 @@ write memory
 enable
 configure terminal
 
-! --- Basic Setup & SSH ---
+! --- Basic Setup ---
 hostname R-CORE2
 no ip domain-lookup
-ip domain-name netadmin.local
 
 username admin privilege 15 secret AdminPass123!
-crypto key generate rsa general-keys modulus 2048
-ip ssh version 2
+
+! --- Extended ACL: Restrict Sales (VLAN 10) Access ---
+! Permits return TCP traffic for connections initiated by IT/Management (established)
+! Denies new sessions initiated from Sales to IT (172.16.20.0/24) and Management (172.20.0.0/28)
+! Permits Sales to access all other destinations (Internet)
+ip access-list extended BLOCK-SALES-TO-IT-MGMT
+ permit tcp 192.168.10.0 0.0.0.255 172.16.20.0 0.0.0.255 established
+ permit tcp 192.168.10.0 0.0.0.255 172.20.0.0 0.0.0.15 established
+ deny ip 192.168.10.0 0.0.0.255 172.16.20.0 0.0.0.255
+ deny ip 192.168.10.0 0.0.0.255 172.20.0.0 0.0.0.15
+ permit ip 192.168.10.0 0.0.0.255 any
 
 ! --- Loopback & Transit Interfaces ---
 interface Loopback0
@@ -283,6 +278,7 @@ interface GigabitEthernet0/2.10
  description Gateway for VLAN 10 (SALES)
  encapsulation dot1Q 10
  ip address 192.168.10.1 255.255.255.0
+ ip access-group BLOCK-SALES-TO-IT-MGMT in
 
 interface GigabitEthernet0/2.20
  description Gateway for VLAN 20 (IT-ADMIN)
@@ -312,7 +308,6 @@ line con 0
  logging synchronous
  login local
 line vty 0 4
- transport input ssh
  login local
 
 end
@@ -328,14 +323,11 @@ write memory
 enable
 configure terminal
 
-! --- Basic Setup & Security ---
+! --- Basic Setup ---
 hostname SW-DIST
 no ip domain-lookup
-ip domain-name netadmin.local
 
 username admin privilege 15 secret AdminPass123!
-crypto key generate rsa general-keys modulus 2048
-ip ssh version 2
 
 ! --- VLAN Creation ---
 vlan 10
@@ -389,7 +381,6 @@ line con 0
  logging synchronous
  login local
 line vty 0 4
- transport input ssh
  login local
 
 end
@@ -405,14 +396,11 @@ write memory
 enable
 configure terminal
 
-! --- Basic Setup & SSH ---
+! --- Basic Setup ---
 hostname SW-ACCESS1
 no ip domain-lookup
-ip domain-name netadmin.local
 
 username admin privilege 15 secret AdminPass123!
-crypto key generate rsa general-keys modulus 2048
-ip ssh version 2
 
 ! --- VLAN Database ---
 vlan 10
@@ -474,7 +462,6 @@ line con 0
  logging synchronous
  login local
 line vty 0 4
- transport input ssh
  login local
 
 end
@@ -490,14 +477,11 @@ write memory
 enable
 configure terminal
 
-! --- Basic Setup & SSH ---
+! --- Basic Setup ---
 hostname SW-ACCESS2
 no ip domain-lookup
-ip domain-name netadmin.local
 
 username admin privilege 15 secret AdminPass123!
-crypto key generate rsa general-keys modulus 2048
-ip ssh version 2
 
 ! --- VLAN Database ---
 vlan 10
@@ -550,7 +534,6 @@ line con 0
  logging synchronous
  login local
 line vty 0 4
- transport input ssh
  login local
 
 end
@@ -621,18 +604,17 @@ show ip protocols
 
 ```
 
-### NAT & SSH Verification (R-EDGE / Switches)
+### ACL & NAT Verification (R-CORE2 / R-EDGE)
 
 ```cisconetworking
-! Verify active source NAT dynamic translations
+! Check Inter-VLAN Access Control List match counters on R-CORE2
+show access-lists BLOCK-SALES-TO-IT-MGMT
+
+! Verify active source NAT dynamic translations on R-EDGE
 show ip nat translations
 
-! Check packet counters and active pool statistics
+! Check packet counters and active pool statistics on R-EDGE
 show ip nat statistics
-
-! Verify SSH operational mode on all devices
-show ip ssh
-show users
 
 ```
 
@@ -640,7 +622,20 @@ show users
 
 ## Part L: Revalida Troubleshooting Procedure
 
-### 1. VLAN & Trunking Issues
+### 1. Inter-VLAN ACL & Access Control Issues
+
+1. **Verify Sales Restrictions:**
+* Ping from **PC0** (`192.168.10.11`) to **PC2** (`172.16.20.11`) or **PC4** (`172.20.0.11`). It **must fail** (Destination Host Unreachable).
+* Ping from **PC2** (`172.16.20.11`) or **PC4** (`172.20.0.11`) to **PC0** (`192.168.10.11`). It **must succeed**.
+
+
+2. **ACL Hit Counter Inspection:**
+* Run `show access-lists BLOCK-SALES-TO-IT-MGMT` on **R-CORE2**.
+* Confirm that deny packets increment when Sales attempts to ping IT or Management networks.
+
+
+
+### 2. VLAN & Trunking Issues
 
 1. Execute `show vlan brief` on switches to verify that target access ports are explicitly assigned to their intended VLANs (VLAN 10, 20, or 93).
 2. Execute `show interfaces trunk` on all inter-switch and router-facing links:
@@ -651,13 +646,13 @@ show users
 
 3. Validate subinterface encapsulation on `R-CORE2` using `show ip interface brief`. Confirm subinterface dot1q IDs strictly match VLAN IDs (`.10` = 10, `.20` = 20, `.93` = 93).
 
-### 2. Spanning Tree Protocol (STP) Loops / Discarding Issues
+### 3. Spanning Tree Protocol (STP) Loops / Discarding Issues
 
 1. Run `show spanning-tree vlan <id>` on `SW-DIST`. Verify it states `"This bridge is the root"`.
 2. Inspect interface roles across access switches (`SW-ACCESS1`, `SW-ACCESS2`). Confirm exactly one port in the redundant switch triangle enters `BLK`/`DISC` (Alternate/Blocking state) to verify loop prevention.
 3. If an access port drops unexpectedly when a host connects, run `show interface <type/num>` to verify if **BPDU Guard** placed the interface into an `err-disable` state due to receiving unexpected BPDUs. Recover using `shutdown` then `no shutdown`.
 
-### 3. OSPF Neighbor & Routing Failures
+### 4. OSPF Neighbor & Routing Failures
 
 1. Run `show ip ospf neighbor` on `R-EDGE`, `R-CORE1`, and `R-CORE2`. Adjacency status must settle at `FULL`.
 2. If stuck in `INIT` or `2-WAY`:
@@ -672,7 +667,7 @@ show users
 
 
 
-### 4. NAT / External Internet Access Failures
+### 5. NAT / External Internet Access Failures
 
 1. Execute `show ip nat statistics` on `R-EDGE`.
 2. Verify interface bindings:
