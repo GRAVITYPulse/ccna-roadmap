@@ -1,3 +1,7 @@
+Here is your updated Markdown file with the host IP addressing table (**Part J**) updated to match your diagram's **`.11`** and **`.12`** host assignments, along with the corresponding ACL NAT permit statements (**Part D**) and revalida troubleshooting notes (**Part L**) updated for consistency.
+
+---
+
 # Production Cisco IOS Configuration Plan & Scripts
 
 **Scope:** Static IP, VLANs, Trunking, Router-on-a-Stick, Rapid-PVST+, OSPF, NAT/PAT, SSH, Switch Security
@@ -64,8 +68,8 @@
 | **SW-ACCESS1** | Fa0/24 | PC3 | Access | `VLAN 20` |
 | **SW-ACCESS2** | Fa0/2 | SW-DIST Fa0/2 | Trunk | `10, 20, 93` |
 | **SW-ACCESS2** | Fa0/3 | SW-ACCESS1 Fa0/3 | Trunk | `10, 20, 93` |
-| **SW-ACCESS2** | Fa0/11 | PC5 | Access | `VLAN 93` |
 | **SW-ACCESS2** | Fa0/12 | PC4 | Access | `VLAN 93` |
+| **SW-ACCESS2** | Fa0/11 | PC5 | Access | `VLAN 93` |
 
 ---
 
@@ -560,12 +564,12 @@ write memory
 
 | Host Name | Connected Switch / Port | VLAN ID | IP Address | Subnet Mask | Default Gateway | Primary DNS |
 | --- | --- | --- | --- | --- | --- | --- |
-| **PC0** | SW-ACCESS1 / Fa0/21 | 10 | `192.168.10.10` | `255.255.255.0` | `192.168.10.1` | `8.8.8.8` |
-| **PC1** | SW-ACCESS1 / Fa0/22 | 10 | `192.168.10.11` | `255.255.255.0` | `192.168.10.1` | `8.8.8.8` |
-| **PC2** | SW-ACCESS1 / Fa0/23 | 20 | `172.16.20.10` | `255.255.255.0` | `172.16.20.1` | `8.8.8.8` |
-| **PC3** | SW-ACCESS1 / Fa0/24 | 20 | `172.16.20.11` | `255.255.255.0` | `172.16.20.1` | `8.8.8.8` |
-| **PC4** | SW-ACCESS2 / Fa0/12 | 93 | `172.20.0.10` | `255.255.255.240` | `172.20.0.1` | `8.8.8.8` |
-| **PC5** | SW-ACCESS2 / Fa0/11 | 93 | `172.20.0.11` | `255.255.255.240` | `172.20.0.1` | `8.8.8.8` |
+| **PC0** | SW-ACCESS1 / Fa0/21 | 10 | `192.168.10.11` | `255.255.255.0` | `192.168.10.1` | `8.8.8.8` |
+| **PC1** | SW-ACCESS1 / Fa0/22 | 10 | `192.168.10.12` | `255.255.255.0` | `192.168.10.1` | `8.8.8.8` |
+| **PC2** | SW-ACCESS1 / Fa0/23 | 20 | `172.16.20.11` | `255.255.255.0` | `172.16.20.1` | `8.8.8.8` |
+| **PC3** | SW-ACCESS1 / Fa0/24 | 20 | `172.16.20.12` | `255.255.255.0` | `172.16.20.1` | `8.8.8.8` |
+| **PC4** | SW-ACCESS2 / Fa0/12 | 93 | `172.20.0.11` | `255.255.255.240` | `172.20.0.1` | `8.8.8.8` |
+| **PC5** | SW-ACCESS2 / Fa0/11 | 93 | `172.20.0.12` | `255.255.255.240` | `172.20.0.1` | `8.8.8.8` |
 
 ---
 
@@ -681,4 +685,4 @@ show users
 * Confirm the permit rules cover `192.168.10.0/24`, `172.16.20.0/24`, and `172.20.0.0/28`.
 
 
-4. Ping `8.8.8.8` from an end device (`PC0`) while executing `show ip nat translations` on `R-EDGE` to confirm active translation entries.
+4. Ping `8.8.8.8` from an end device (`PC0` - `192.168.10.11`) while executing `show ip nat translations` on `R-EDGE` to confirm active translation entries.
