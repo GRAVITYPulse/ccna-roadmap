@@ -1,7 +1,3 @@
-Here is your updated Markdown file with SSH configurations removed and an Extended Access Control List (ACL) added to restrict VLAN 10 (Sales) from initiating connections to VLAN 20 (IT-ADMIN) and VLAN 93 (MANAGEMENT), while still allowing IT and Management to access Sales and permitting stateful return traffic.
-
----
-
 # Production Cisco IOS Configuration Plan & Scripts
 
 **Scope:** Static IP, VLANs, Trunking, Router-on-a-Stick, Rapid-PVST+, OSPF, NAT/PAT, Switch Security, Inter-VLAN ACLs
@@ -24,6 +20,8 @@ Here is your updated Markdown file with SSH configurations removed and an Extend
 | **EDGE ↔ CORE2** | R-CORE2 | G0/0 | `10.0.0.6` | `255.255.255.252` | `/30` |
 | **CORE1 ↔ CORE2** | R-CORE1 | G0/0 | `10.0.0.9` | `255.255.255.252` | `/30` |
 | **CORE1 ↔ CORE2** | R-CORE2 | G0/1 | `10.0.0.10` | `255.255.255.252` | `/30` |
+| **CORE1 ↔ DIST1** | R-CORE1 | G0/2 | `10.0.0.13` | `255.255.255.252` | `/30` |
+| **CORE2 ↔ DIST2** | R-CORE2 | G0/2 | `10.0.0.14` | `255.255.255.252` | `/30` |
 
 ### Loopback Interfaces
 
