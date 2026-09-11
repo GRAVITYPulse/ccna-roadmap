@@ -1,6 +1,10 @@
+Here is your updated Markdown file with SSH configurations removed and an Extended Access Control List (ACL) added to restrict VLAN 10 (Sales) from initiating connections to VLAN 20 (IT-ADMIN) and VLAN 93 (MANAGEMENT), while still allowing IT and Management to access Sales and permitting stateful return traffic.
+
+---
+
 # Production Cisco IOS Configuration Plan & Scripts
 
-**Scope:** Static IP, VLANs, Trunking, Dual Router-on-a-Stick, Rapid-PVST+, OSPF, NAT/PAT, Switch Security, Inter-VLAN ACLs
+**Scope:** Static IP, VLANs, Trunking, Router-on-a-Stick, Rapid-PVST+, OSPF, NAT/PAT, Switch Security, Inter-VLAN ACLs
 
 **Target Platform:** Cisco IOS / IOS-XE / Cisco Packet Tracer Topology
 
@@ -8,7 +12,7 @@
 
 ## Part A: Complete Addressing Table
 
-### Router-to-Router & Core-to-Distribution Links
+### Router-to-Router / WAN Links
 
 | Connection | Device | Interface | IP Address | Subnet Mask | Wildcard / CIDR |
 | --- | --- | --- | --- | --- | --- |
@@ -20,8 +24,6 @@
 | **EDGE ↔ CORE2** | R-CORE2 | G0/0 | `10.0.0.6` | `255.255.255.252` | `/30` |
 | **CORE1 ↔ CORE2** | R-CORE1 | G0/0 | `10.0.0.9` | `255.255.255.252` | `/30` |
 | **CORE1 ↔ CORE2** | R-CORE2 | G0/1 | `10.0.0.10` | `255.255.255.252` | `/30` |
-| **CORE1 ↔ DIST1** | R-CORE1 | G0/2 | `10.0.0.13` | `255.255.255.252` | `/30` |
-| **CORE2 ↔ DIST2** | R-CORE2 | G0/2 | `10.0.0.14` | `255.255.255.252` | `/30` |
 
 ### Loopback Interfaces
 
@@ -32,20 +34,19 @@
 | **R-CORE2** | Loopback0 | `3.3.3.3` | `255.255.255.255` | OSPF Router ID |
 | **R-ISP** | Loopback0 | `8.8.8.8` | `255.255.255.255` | Simulated Internet Target |
 
-### VLAN Networks & Gateways (R-CORE1 & R-CORE2 ROAS Gateways)
+### VLAN Networks & Gateways (R-CORE2)
 
-| VLAN ID | VLAN Name | Network Address | Subnet Mask | Default Gateway (Subinterface) |
+| VLAN ID | VLAN Name | Network Address | Subnet Mask | Default Gateway (SVI / Subinterface) |
 | --- | --- | --- | --- | --- |
-| **10** | `SALES` | `192.168.10.0/24` | `255.255.255.0` | `192.168.10.1` (R-CORE1/2 G0/2.10) |
-| **20** | `IT-ADMIN` | `172.16.20.0/24` | `255.255.255.0` | `172.16.20.1` (R-CORE1/2 G0/2.20) |
-| **93** | `MANAGEMENT` | `172.20.0.0/28` | `255.255.255.240` | `172.20.0.1` (R-CORE1/2 G0/2.93) |
+| **10** | `SALES` | `192.168.10.0/24` | `255.255.255.0` | `192.168.10.1` (R-CORE2 G0/2.10) |
+| **20** | `IT-ADMIN` | `172.16.20.0/24` | `255.255.255.0` | `172.16.20.1` (R-CORE2 G0/2.20) |
+| **93** | `MANAGEMENT` | `172.20.0.0/28` | `255.255.255.240` | `172.20.0.1` (R-CORE2 G0/2.93) |
 
 ### Switch Management SVIs
 
 | Switch | Management VLAN | SVI IP Address | Subnet Mask | Default Gateway |
 | --- | --- | --- | --- | --- |
-| **SW-DIST1** | VLAN 93 | `172.20.0.2` | `255.255.255.240` | `172.20.0.1` |
-| **SW-DIST2** | VLAN 93 | `172.20.0.5` | `255.255.255.240` | `172.20.0.1` |
+| **SW-DIST** | VLAN 93 | `172.20.0.2` | `255.255.255.240` | `172.20.0.1` |
 | **SW-ACCESS1** | VLAN 93 | `172.20.0.3` | `255.255.255.240` | `172.20.0.1` |
 | **SW-ACCESS2** | VLAN 93 | `172.20.0.4` | `255.255.255.240` | `172.20.0.1` |
 
@@ -55,24 +56,20 @@
 
 | Device | Interface | Connected Device | Port Mode | VLAN / Allowed VLANs |
 | --- | --- | --- | --- | --- |
-| **R-CORE1** | G0/2 | SW-DIST1 G0/1 | Trunk (802.1Q Subinterfaces) | `10, 20, 93` |
-| **R-CORE2** | G0/2 | SW-DIST2 G0/1 | Trunk (802.1Q Subinterfaces) | `10, 20, 93` |
-| **SW-DIST1** | G0/1 | R-CORE1 G0/2 | Trunk | `10, 20, 93` |
-| **SW-DIST1** | Fa0/1 | SW-ACCESS1 Fa0/1 | Trunk | `10, 20, 93` |
-| **SW-DIST1** | Fa0/2 | SW-DIST2 Fa0/2 | Trunk | `10, 20, 93` |
-| **SW-DIST2** | G0/1 | R-CORE2 G0/2 | Trunk | `10, 20, 93` |
-| **SW-DIST2** | Fa0/4 | SW-ACCESS2 Fa0/4 | Trunk | `10, 20, 93` |
-| **SW-DIST2** | Fa0/2 | SW-DIST1 Fa0/2 | Trunk | `10, 20, 93` |
-| **SW-ACCESS1** | Fa0/1 | SW-DIST1 Fa0/1 | Trunk | `10, 20, 93` |
+| **R-CORE2** | G0/2 | SW-DIST G0/1 | Trunk (802.1Q Subinterfaces) | `10, 20, 93` |
+| **SW-DIST** | G0/1 | R-CORE2 G0/2 | Trunk | `10, 20, 93` |
+| **SW-DIST** | Fa0/1 | SW-ACCESS1 Fa0/1 | Trunk | `10, 20, 93` |
+| **SW-DIST** | Fa0/2 | SW-ACCESS2 Fa0/2 | Trunk | `10, 20, 93` |
+| **SW-ACCESS1** | Fa0/1 | SW-DIST Fa0/1 | Trunk | `10, 20, 93` |
 | **SW-ACCESS1** | Fa0/3 | SW-ACCESS2 Fa0/3 | Trunk | `10, 20, 93` |
 | **SW-ACCESS1** | Fa0/21 | PC0 | Access | `VLAN 10` |
 | **SW-ACCESS1** | Fa0/22 | PC1 | Access | `VLAN 10` |
 | **SW-ACCESS1** | Fa0/23 | PC2 | Access | `VLAN 20` |
 | **SW-ACCESS1** | Fa0/24 | PC3 | Access | `VLAN 20` |
-| **SW-ACCESS2** | Fa0/4 | SW-DIST2 Fa0/4 | Trunk | `10, 20, 93` |
+| **SW-ACCESS2** | Fa0/2 | SW-DIST Fa0/2 | Trunk | `10, 20, 93` |
 | **SW-ACCESS2** | Fa0/3 | SW-ACCESS1 Fa0/3 | Trunk | `10, 20, 93` |
-| **SW-ACCESS2** | Fa0/11 | PC5 | Access | `VLAN 93` |
 | **SW-ACCESS2** | Fa0/12 | PC4 | Access | `VLAN 93` |
+| **SW-ACCESS2** | Fa0/11 | PC5 | Access | `VLAN 93` |
 
 ---
 
@@ -91,12 +88,10 @@ username admin privilege 15 secret AdminPass123!
 
 ! --- Interfaces ---
 interface Loopback0
- description Simulated Internet Destination
  ip address 8.8.8.8 255.255.255.255
  no shutdown
 
 interface GigabitEthernet0/0
- description Link to R-EDGE (WAN)
  ip address 203.0.113.1 255.255.255.252
  no shutdown
 
@@ -128,24 +123,20 @@ username admin privilege 15 secret AdminPass123!
 
 ! --- Interfaces ---
 interface Loopback0
- description OSPF Router ID
  ip address 1.1.1.1 255.255.255.255
  no shutdown
 
 interface GigabitEthernet0/0
- description Link to R-CORE2 G0/0
  ip address 10.0.0.5 255.255.255.252
  ip nat inside
  no shutdown
 
 interface GigabitEthernet0/1
- description Link to R-CORE1 G0/1
  ip address 10.0.0.1 255.255.255.252
  ip nat inside
  no shutdown
 
 interface GigabitEthernet0/2
- description WAN Link to R-ISP G0/0
  ip address 203.0.113.2 255.255.255.252
  ip nat outside
  no shutdown
@@ -196,50 +187,18 @@ no ip domain-lookup
 
 username admin privilege 15 secret AdminPass123!
 
-! --- Extended ACL: Restrict Sales (VLAN 10) Access ---
-ip access-list extended BLOCK-SALES-TO-IT-MGMT
- permit tcp 192.168.10.0 0.0.0.255 172.16.20.0 0.0.0.255 established
- permit tcp 192.168.10.0 0.0.0.255 172.20.0.0 0.0.0.15 established
- deny ip 192.168.10.0 0.0.0.255 172.16.20.0 0.0.0.255
- deny ip 192.168.10.0 0.0.0.255 172.20.0.0 0.0.0.15
- permit ip 192.168.10.0 0.0.0.255 any
-
 ! --- Interfaces ---
 interface Loopback0
- description OSPF Router ID
  ip address 2.2.2.2 255.255.255.255
  no shutdown
 
 interface GigabitEthernet0/0
- description Link to R-CORE2 G0/1
  ip address 10.0.0.9 255.255.255.252
  no shutdown
 
 interface GigabitEthernet0/1
- description Link to R-EDGE G0/1
  ip address 10.0.0.2 255.255.255.252
  no shutdown
-
-! --- Router-on-a-Stick (ROAS) Trunk Base ---
-interface GigabitEthernet0/2
- description Trunk to SW-DIST1 G0/1
- no shutdown
-
-interface GigabitEthernet0/2.10
- description Gateway for VLAN 10 (SALES)
- encapsulation dot1Q 10
- ip address 192.168.10.1 255.255.255.0
- ip access-group BLOCK-SALES-TO-IT-MGMT in
-
-interface GigabitEthernet0/2.20
- description Gateway for VLAN 20 (IT-ADMIN)
- encapsulation dot1Q 20
- ip address 172.16.20.1 255.255.255.0
-
-interface GigabitEthernet0/2.93
- description Gateway for VLAN 93 (MANAGEMENT)
- encapsulation dot1Q 93
- ip address 172.20.0.1 255.255.255.240
 
 ! --- OSPF Configuration ---
 router ospf 1
@@ -247,12 +206,6 @@ router ospf 1
  network 2.2.2.2 0.0.0.0 area 0
  network 10.0.0.0 0.0.0.3 area 0
  network 10.0.0.8 0.0.0.3 area 0
- network 192.168.10.0 0.0.0.255 area 0
- network 172.16.20.0 0.0.0.255 area 0
- network 172.20.0.0 0.0.0.15 area 0
- passive-interface GigabitEthernet0/2.10
- passive-interface GigabitEthernet0/2.20
- passive-interface GigabitEthernet0/2.93
 
 ! --- Line Security ---
 line con 0
@@ -281,6 +234,9 @@ no ip domain-lookup
 username admin privilege 15 secret AdminPass123!
 
 ! --- Extended ACL: Restrict Sales (VLAN 10) Access ---
+! Permits return TCP traffic for connections initiated by IT/Management (established)
+! Denies new sessions initiated from Sales to IT (172.16.20.0/24) and Management (172.20.0.0/28)
+! Permits Sales to access all other destinations (Internet)
 ip access-list extended BLOCK-SALES-TO-IT-MGMT
  permit tcp 192.168.10.0 0.0.0.255 172.16.20.0 0.0.0.255 established
  permit tcp 192.168.10.0 0.0.0.255 172.20.0.0 0.0.0.15 established
@@ -290,38 +246,31 @@ ip access-list extended BLOCK-SALES-TO-IT-MGMT
 
 ! --- Loopback & Transit Interfaces ---
 interface Loopback0
- description OSPF Router ID
  ip address 3.3.3.3 255.255.255.255
  no shutdown
 
 interface GigabitEthernet0/0
- description Link to R-EDGE G0/0
  ip address 10.0.0.6 255.255.255.252
  no shutdown
 
 interface GigabitEthernet0/1
- description Link to R-CORE1 G0/0
  ip address 10.0.0.10 255.255.255.252
  no shutdown
 
 ! --- Router-on-a-Stick (ROAS) Trunk Base ---
 interface GigabitEthernet0/2
- description Trunk to SW-DIST2 G0/1
  no shutdown
 
 interface GigabitEthernet0/2.10
- description Gateway for VLAN 10 (SALES)
  encapsulation dot1Q 10
  ip address 192.168.10.1 255.255.255.0
  ip access-group BLOCK-SALES-TO-IT-MGMT in
 
 interface GigabitEthernet0/2.20
- description Gateway for VLAN 20 (IT-ADMIN)
  encapsulation dot1Q 20
  ip address 172.16.20.1 255.255.255.0
 
 interface GigabitEthernet0/2.93
- description Gateway for VLAN 93 (MANAGEMENT)
  encapsulation dot1Q 93
  ip address 172.20.0.1 255.255.255.240
 
@@ -352,14 +301,14 @@ write memory
 
 ---
 
-## Part G: Full Cisco IOS Configuration — SW-DIST1
+## Part G: Full Cisco IOS Configuration — SW-DIST
 
 ```cisconetworking
 enable
 configure terminal
 
 ! --- Basic Setup ---
-hostname SW-DIST1
+hostname SW-DIST
 no ip domain-lookup
 
 username admin privilege 15 secret AdminPass123!
@@ -373,27 +322,24 @@ vlan 93
  name MANAGEMENT
 exit
 
-! --- Rapid Spanning Tree Protocol (Primary Root Bridge) ---
+! --- Rapid Spanning Tree Protocol (Root Bridge) ---
 spanning-tree mode rapid-pvst
 spanning-tree vlan 10,20,93 root primary
 
 ! --- Trunk Interfaces ---
 interface GigabitEthernet0/1
- description Router Trunk to R-CORE1 G0/2
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 10,20,93
  no shutdown
 
 interface FastEthernet0/1
- description Trunk to SW-ACCESS1 Fa0/1
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 10,20,93
  no shutdown
 
 interface FastEthernet0/2
- description Trunk to SW-DIST2 Fa0/2
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 10,20,93
@@ -401,7 +347,6 @@ interface FastEthernet0/2
 
 ! --- Switch Management SVI ---
 interface vlan 93
- description Management SVI
  ip address 172.20.0.2 255.255.255.240
  no shutdown
 
@@ -425,80 +370,7 @@ write memory
 
 ---
 
-## Part H: Full Cisco IOS Configuration — SW-DIST2
-
-```cisconetworking
-enable
-configure terminal
-
-! --- Basic Setup ---
-hostname SW-DIST2
-no ip domain-lookup
-
-username admin privilege 15 secret AdminPass123!
-
-! --- VLAN Creation ---
-vlan 10
- name SALES
-vlan 20
- name IT-ADMIN
-vlan 93
- name MANAGEMENT
-exit
-
-! --- Rapid Spanning Tree Protocol (Secondary Root Bridge) ---
-spanning-tree mode rapid-pvst
-spanning-tree vlan 10,20,93 root secondary
-
-! --- Trunk Interfaces ---
-interface GigabitEthernet0/1
- description Router Trunk to R-CORE2 G0/2
- switchport trunk encapsulation dot1q
- switchport mode trunk
- switchport trunk allowed vlan 10,20,93
- no shutdown
-
-interface FastEthernet0/4
- description Trunk to SW-ACCESS2 Fa0/4
- switchport trunk encapsulation dot1q
- switchport mode trunk
- switchport trunk allowed vlan 10,20,93
- no shutdown
-
-interface FastEthernet0/2
- description Trunk to SW-DIST1 Fa0/2
- switchport trunk encapsulation dot1q
- switchport mode trunk
- switchport trunk allowed vlan 10,20,93
- no shutdown
-
-! --- Switch Management SVI ---
-interface vlan 93
- description Management SVI
- ip address 172.20.0.5 255.255.255.240
- no shutdown
-
-ip default-gateway 172.20.0.1
-
-! --- Port Security Hardening (Unused Ports Shutdown) ---
-interface range FastEthernet0/1-3, FastEthernet0/5-24, GigabitEthernet0/2
- shutdown
-
-! --- Line Security ---
-line con 0
- logging synchronous
- login local
-line vty 0 4
- login local
-
-end
-write memory
-
-```
-
----
-
-## Part I: Full Cisco IOS Configuration — SW-ACCESS1
+## Part H: Full Cisco IOS Configuration — SW-ACCESS1
 
 ```cisconetworking
 enable
@@ -519,25 +391,23 @@ vlan 93
  name MANAGEMENT
 exit
 
-! --- STP Mode ---
+! --- STP Mode & Secondary Root ---
 spanning-tree mode rapid-pvst
+spanning-tree vlan 10,20,93 root secondary
 
 ! --- Trunk Ports ---
 interface FastEthernet0/1
- description Trunk to SW-DIST1 Fa0/1
  switchport mode trunk
  switchport trunk allowed vlan 10,20,93
  no shutdown
 
 interface FastEthernet0/3
- description Trunk to SW-ACCESS2 Fa0/3
  switchport mode trunk
  switchport trunk allowed vlan 10,20,93
  no shutdown
 
 ! --- Access Ports (End Devices) ---
 interface range FastEthernet0/21 - 22
- description Access Ports - SALES (VLAN 10)
  switchport mode access
  switchport access vlan 10
  spanning-tree portfast
@@ -545,7 +415,6 @@ interface range FastEthernet0/21 - 22
  no shutdown
 
 interface range FastEthernet0/23 - 24
- description Access Ports - IT-ADMIN (VLAN 20)
  switchport mode access
  switchport access vlan 20
  spanning-tree portfast
@@ -554,7 +423,6 @@ interface range FastEthernet0/23 - 24
 
 ! --- Switch Management SVI ---
 interface vlan 93
- description Management SVI
  ip address 172.20.0.3 255.255.255.240
  no shutdown
 
@@ -578,7 +446,7 @@ write memory
 
 ---
 
-## Part J: Full Cisco IOS Configuration — SW-ACCESS2
+## Part I: Full Cisco IOS Configuration — SW-ACCESS2
 
 ```cisconetworking
 enable
@@ -603,29 +471,18 @@ exit
 spanning-tree mode rapid-pvst
 
 ! --- Trunk Ports ---
-interface FastEthernet0/4
- description Trunk to SW-DIST2 Fa0/4
+interface FastEthernet0/2
  switchport mode trunk
  switchport trunk allowed vlan 10,20,93
  no shutdown
 
 interface FastEthernet0/3
- description Trunk to SW-ACCESS1 Fa0/3
  switchport mode trunk
  switchport trunk allowed vlan 10,20,93
  no shutdown
 
 ! --- Access Ports (End Devices) ---
-interface FastEthernet0/11
- description Access Port - PC5 (MANAGEMENT - VLAN 93)
- switchport mode access
- switchport access vlan 93
- spanning-tree portfast
- spanning-tree bpduguard enable
- no shutdown
-
-interface FastEthernet0/12
- description Access Port - PC4 (MANAGEMENT - VLAN 93)
+interface range FastEthernet0/11 - 12
  switchport mode access
  switchport access vlan 93
  spanning-tree portfast
@@ -634,14 +491,13 @@ interface FastEthernet0/12
 
 ! --- Switch Management SVI ---
 interface vlan 93
- description Management SVI
  ip address 172.20.0.4 255.255.255.240
  no shutdown
 
 ip default-gateway 172.20.0.1
 
 ! --- Port Security Hardening (Unused Ports Shutdown) ---
-interface range FastEthernet0/1-2, FastEthernet0/5-10, FastEthernet0/13-24, GigabitEthernet0/1-2
+interface range FastEthernet0/1, FastEthernet0/4-10, FastEthernet0/13-24, GigabitEthernet0/1-2
  shutdown
 
 ! --- Line Security ---
@@ -658,7 +514,7 @@ write memory
 
 ---
 
-## Part K: Static IP Configuration Table for End-Devices
+## Part J: Static IP Configuration Table for End-Devices
 
 | Host Name | Connected Switch / Port | VLAN ID | IP Address | Subnet Mask | Default Gateway | Primary DNS |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -666,12 +522,12 @@ write memory
 | **PC1** | SW-ACCESS1 / Fa0/22 | 10 | `192.168.10.12` | `255.255.255.0` | `192.168.10.1` | `8.8.8.8` |
 | **PC2** | SW-ACCESS1 / Fa0/23 | 20 | `172.16.20.11` | `255.255.255.0` | `172.16.20.1` | `8.8.8.8` |
 | **PC3** | SW-ACCESS1 / Fa0/24 | 20 | `172.16.20.12` | `255.255.255.0` | `172.16.20.1` | `8.8.8.8` |
-| **PC5** | SW-ACCESS2 / Fa0/11 | 93 | `172.20.0.12` | `255.255.255.240` | `172.20.0.1` | `8.8.8.8` |
 | **PC4** | SW-ACCESS2 / Fa0/12 | 93 | `172.20.0.11` | `255.255.255.240` | `172.20.0.1` | `8.8.8.8` |
+| **PC5** | SW-ACCESS2 / Fa0/11 | 93 | `172.20.0.12` | `255.255.255.240` | `172.20.0.1` | `8.8.8.8` |
 
 ---
 
-## Part L: Verification Commands
+## Part K: Verification Commands
 
 ### Layer 2 Verification (Switches)
 
@@ -719,10 +575,10 @@ show ip protocols
 
 ```
 
-### ACL & NAT Verification (R-CORE1 / R-CORE2 / R-EDGE)
+### ACL & NAT Verification (R-CORE2 / R-EDGE)
 
 ```cisconetworking
-! Check Inter-VLAN Access Control List match counters on R-CORE1 and R-CORE2
+! Check Inter-VLAN Access Control List match counters on R-CORE2
 show access-lists BLOCK-SALES-TO-IT-MGMT
 
 ! Verify active source NAT dynamic translations on R-EDGE
@@ -735,7 +591,7 @@ show ip nat statistics
 
 ---
 
-## Part M: Revalida Troubleshooting Procedure
+## Part L: Revalida Troubleshooting Procedure
 
 ### 1. Inter-VLAN ACL & Access Control Issues
 
@@ -745,7 +601,7 @@ show ip nat statistics
 
 
 2. **ACL Hit Counter Inspection:**
-* Run `show access-lists BLOCK-SALES-TO-IT-MGMT` on **R-CORE1** and **R-CORE2**.
+* Run `show access-lists BLOCK-SALES-TO-IT-MGMT` on **R-CORE2**.
 * Confirm that deny packets increment when Sales attempts to ping IT or Management networks.
 
 
@@ -759,12 +615,12 @@ show ip nat statistics
 * Ensure `10, 20, 93` are within the **VLANs allowed on trunk** list.
 
 
-3. Validate subinterface encapsulation on `R-CORE1` and `R-CORE2` using `show ip interface brief`. Confirm subinterface dot1q IDs strictly match VLAN IDs (`.10` = 10, `.20` = 20, `.93` = 93).
+3. Validate subinterface encapsulation on `R-CORE2` using `show ip interface brief`. Confirm subinterface dot1q IDs strictly match VLAN IDs (`.10` = 10, `.20` = 20, `.93` = 93).
 
 ### 3. Spanning Tree Protocol (STP) Loops / Discarding Issues
 
-1. Run `show spanning-tree vlan <id>` on `SW-DIST1`. Verify it states `"This bridge is the root"`.
-2. Inspect interface roles across access switches (`SW-ACCESS1`, `SW-ACCESS2`) and `SW-DIST2`. Confirm that redundant loop paths properly establish Alternate/Blocking (`ALT`/`BLK`) states to prevent switching loops.
+1. Run `show spanning-tree vlan <id>` on `SW-DIST`. Verify it states `"This bridge is the root"`.
+2. Inspect interface roles across access switches (`SW-ACCESS1`, `SW-ACCESS2`). Confirm exactly one port in the redundant switch triangle enters `BLK`/`DISC` (Alternate/Blocking state) to verify loop prevention.
 3. If an access port drops unexpectedly when a host connects, run `show interface <type/num>` to verify if **BPDU Guard** placed the interface into an `err-disable` state due to receiving unexpected BPDUs. Recover using `shutdown` then `no shutdown`.
 
 ### 4. OSPF Neighbor & Routing Failures
@@ -776,7 +632,7 @@ show ip nat statistics
 * Ensure OSPF `hello` and `dead` timers match on adjacent interfaces.
 
 
-3. If routes are missing on `R-EDGE`, `R-CORE1`, or `R-CORE2`:
+3. If routes are missing on `R-EDGE` or `R-CORE1`:
 * Confirm network statements cover inter-router link subnets correctly in `router ospf 1`.
 * Verify `default-information originate` is present on `R-EDGE` and that `R-EDGE` maintains a valid static default route pointing to `R-ISP` (`203.0.113.1`).
 
