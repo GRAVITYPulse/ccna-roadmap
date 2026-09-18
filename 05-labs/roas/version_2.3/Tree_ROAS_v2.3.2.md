@@ -2,9 +2,6 @@
 
 | Device | Interface / Sub-interface | IP Address | Subnet Mask | Gateway / Virtual IP | Description / Function |
 | --- | --- | --- | --- | --- | --- |
-| **PC0 / PC1** | Fa0 | 192.168.10.11 - 12 | 255.255.255.0 | 192.168.10.1 | **VLAN 10**  (SALES Workstations)|
-| **PC2 / PC3** | Fa0 | 172.16.20.11 - 12 | 255.255.255.0 | 172.16.20.1 | **VLAN 20**  (IT_ADMIN Workstations)|
-| **PC4 / PC5** | Fa0 | 172.20.0.11 - 12 | 255.255.255.240 | 172.20.0.1 | **VLAN 93**  (MANAGEMENT Workstations)|
 | **SW-DIST1** | Vlan 10 | 192.168.10.2 | 255.255.255.0 | **VIP:**  192.168.10.1 | Active HSRP Gateway for VLAN 10|
 |  | Vlan 20 | 172.16.20.2 | 255.255.255.0 | **VIP:**  172.16.20.1 | Active HSRP Gateway for VLAN 20|
 |  | Vlan 93 | 172.20.0.2 | 255.255.255.240 | **VIP:**  172.20.0.1 | Active HSRP Gateway for VLAN 93|
