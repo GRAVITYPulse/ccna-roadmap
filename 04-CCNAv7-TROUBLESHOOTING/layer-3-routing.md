@@ -1,5 +1,3 @@
-### `layer-3-routing.md`
-
 ```markdown
 # Layer 3 — Routing
 
@@ -25,54 +23,96 @@ Layer 3 provides logical addressing and forwarding between IP networks.
 ```cisco
 show ip route
 
+```
+
 Example:
 
+```text
 O 192.168.20.0/24 [110/2] via 10.0.12.2
+
+```
 
 Interpretation:
 
-O                 = OSPF
-192.168.20.0/24   = Destination
-110               = Administrative Distance
-2                 = Metric
-10.0.12.2         = Next Hop
-Common Route Codes
-Code	Meaning
-C	Connected
-L	Local
-S	Static
-O	OSPF
-D	EIGRP
-R	RIP
-B	BGP
-*	Candidate default
-Static Route
+* **O** = OSPF
+* **192.168.20.0/24** = Destination
+* **110** = Administrative Distance
+* **2** = Metric
+* **10.0.12.2** = Next Hop
+
+### Common Route Codes
+
+| Code | Meaning |
+| --- | --- |
+| `C` | Connected |
+| `L` | Local |
+| `S` | Static |
+| `O` | OSPF |
+| `D` | EIGRP |
+| `R` | RIP |
+| `B` | BGP |
+| `*` | Candidate default |
+
+---
+
+## Static Route Configuration
+
+```cisco
 ip route 192.168.20.0 255.255.255.0 10.0.12.2
 
-Verify:
+```
 
+**Verify:**
+
+```cisco
 show ip route
-Default Route
+
+```
+
+---
+
+## Default Route Configuration
+
+```cisco
 ip route 0.0.0.0 0.0.0.0 <next-hop>
 
-Verify:
+```
 
+**Verify:**
+
+```cisco
 show ip route 0.0.0.0
-Routing Troubleshooting
+
+```
+
+---
+
+## Routing Troubleshooting
+
+```cisco
 show ip route
 show ip route <destination>
 show ip interface brief
 show arp
 
-Test:
+```
 
+**Test:**
+
+```cisco
 ping <next-hop>
 ping <destination>
 traceroute <destination>
-Important Principle
+
+```
+
+---
+
+## Important Principle
 
 Routing requires a valid path in both directions.
 
+```text
 Source
   ↓
 Forward Path
@@ -83,8 +123,11 @@ Return Path
   ↓
 Source
 
+```
+
 A missing return route can cause communication to fail even when the forward route exists.
 
+```
 
 ---
 
@@ -97,19 +140,27 @@ A missing return route can cause communication to fail even when the forward rou
 
 `ping` uses ICMP Echo Request and Echo Reply messages to test IP reachability.
 
-Cisco:
+### Cisco Command
 
 ```cisco
 ping 192.168.10.1
 
-Windows:
+```
 
+### Windows Command
+
+```cmd
 ping 192.168.10.1
-Progressive Ping
+
+```
+
+---
+
+## Progressive Ping
 
 Do not immediately test the final destination.
 
-Test:
+### Test Order:
 
 1. Local interface
 2. Default gateway
@@ -118,38 +169,56 @@ Test:
 5. Remote network gateway
 6. Final host
 
-Example:
+### Path Example:
 
+```text
 PC
- ↓
+  ↓
 192.168.10.1
- ↓
+  ↓
 10.0.12.2
- ↓
+  ↓
 10.0.23.2
- ↓
+  ↓
 192.168.20.1
- ↓
+  ↓
 192.168.20.10
+
+```
 
 The first failed test provides a strong clue about where the problem exists.
 
-Common Ping Results
-Success
+---
+
+## Common Ping Results
+
+### Success
+
+```text
 !!!!!
+
+```
 
 Indicates Echo Replies were received.
 
-Failure
+### Failure
+
+```text
 .....
+
+```
 
 Indicates no replies were received within the timeout.
 
-Possible causes:
+### Possible Causes:
 
-Routing failure
-ACL
-Host firewall
-Interface failure
-Incorrect addressing
-Missing return path
+* Routing failure
+* ACL
+* Host firewall
+* Interface failure
+* Incorrect addressing
+* Missing return path
+
+```
+
+```

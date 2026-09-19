@@ -1,5 +1,3 @@
-### `router-configs.md`
-
 ```markdown
 # Router Configuration Guide
 
@@ -14,26 +12,63 @@ hostname R1
 no ip domain-lookup
 
 enable secret <SECRET>
-Interface Configuration
+
+```
+
+---
+
+# Interface Configuration
+
+```cisco
 interface GigabitEthernet0/0
  description LAN
  ip address 192.168.10.1 255.255.255.0
  no shutdown
 
-Verify:
+```
 
+## Verify
+
+```cisco
 show ip interface brief
-Loopback
+
+```
+
+---
+
+# Loopback Interface
+
+```cisco
 interface Loopback0
  ip address 1.1.1.1 255.255.255.255
 
+```
+
 Loopbacks are commonly used for router IDs, testing, and management.
 
-Static Route
+---
+
+# Routing
+
+## Static Route
+
+```cisco
 ip route 192.168.20.0 255.255.255.0 10.0.12.2
-Default Route
+
+```
+
+## Default Route
+
+```cisco
 ip route 0.0.0.0 0.0.0.0 10.0.12.2
-SSH Management
+
+```
+
+---
+
+# SSH Management
+
+```cisco
 ip domain-name lab.local
 
 username admin privilege 15 secret <SECRET>
@@ -45,16 +80,39 @@ ip ssh version 2
 line vty 0 4
  login local
  transport input ssh
-Save Configuration
+
+```
+
+---
+
+# Save Configuration
+
+```cisco
 copy running-config startup-config
+
+```
 
 or:
 
+```cisco
 write memory
-Verification
+
+```
+
+---
+
+# Verification
+
+```cisco
 show running-config
 show ip interface brief
 show ip route
 show ip protocols
 show version
 show ip ssh
+
+```
+
+```
+
+```

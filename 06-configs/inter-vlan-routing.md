@@ -1,5 +1,3 @@
-### `inter-vlan-routing.md`
-
 ```markdown
 # Inter-VLAN Routing
 
@@ -13,11 +11,18 @@ VLAN 10 ──┐
           ├── Layer 3 Router
           │
 VLAN 20 ──┘
-Router-on-a-Stick
+
+```
+
+---
+
+# Router-on-a-Stick
 
 A single physical router interface uses multiple subinterfaces.
 
-Router
+## Router
+
+```cisco
 interface GigabitEthernet0/0
  no shutdown
 
@@ -28,21 +33,34 @@ interface GigabitEthernet0/0.10
 interface GigabitEthernet0/0.20
  encapsulation dot1Q 20
  ip address 192.168.20.1 255.255.255.0
-Switch
+
+```
+
+## Switch
+
+```cisco
 interface GigabitEthernet0/24
  switchport mode trunk
-Hosts
 
-VLAN 10:
+```
 
-IP: 192.168.10.x
-Gateway: 192.168.10.1
+## Hosts
 
-VLAN 20:
+### VLAN 10
 
-IP: 192.168.20.x
-Gateway: 192.168.20.1
-Layer-3 Switch / SVI
+* **IP:** `192.168.10.x`
+* **Gateway:** `192.168.10.1`
+
+### VLAN 20
+
+* **IP:** `192.168.20.x`
+* **Gateway:** `192.168.20.1`
+
+---
+
+# Layer-3 Switch / SVI
+
+```cisco
 ip routing
 
 interface vlan 10
@@ -52,22 +70,42 @@ interface vlan 10
 interface vlan 20
  ip address 192.168.20.1 255.255.255.0
  no shutdown
-Verification
+
+```
+
+---
+
+# Verification
+
+```cisco
 show ip interface brief
 show interfaces trunk
 show vlan brief
 show ip route
 
-Test:
+```
 
+## Test
+
+```cisco
 ping 192.168.20.10
-Troubleshooting Checklist
- VLAN exists
- Access port belongs to correct VLAN
- Trunk is operational
- VLAN is allowed on trunk
- Router subinterface/SVI exists
- Correct IP address
- Correct subnet mask
- Gateway configured on hosts
- Layer-3 interface is up
+
+```
+
+---
+
+# Troubleshooting Checklist
+
+* [ ] VLAN exists
+* [ ] Access port belongs to correct VLAN
+* [ ] Trunk is operational
+* [ ] VLAN is allowed on trunk
+* [ ] Router subinterface/SVI exists
+* [ ] Correct IP address
+* [ ] Correct subnet mask
+* [ ] Gateway configured on hosts
+* [ ] Layer-3 interface is up
+
+```
+
+```

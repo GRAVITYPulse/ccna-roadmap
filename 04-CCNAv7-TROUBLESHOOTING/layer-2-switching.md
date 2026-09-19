@@ -1,5 +1,3 @@
-### `layer-2-switching.md`
-
 ```markdown
 # Layer 2 — Switching
 
@@ -32,73 +30,127 @@ Destination MAC lookup
       ↓
 Forward / Flood
 
-Verify:
+```
 
+**Verify:**
+
+```cisco
 show mac address-table
 show mac address-table dynamic
-Known Unicast
+
+```
+
+### Known Unicast
 
 If the destination MAC exists in the MAC table:
 
+```text
 Frame → Specific Port
-Unknown Unicast
+
+```
+
+### Unknown Unicast
 
 If the destination MAC is unknown:
 
+```text
 Frame → Flood within VLAN
+
+```
 
 The frame is not normally forwarded back out the interface on which it was received.
 
-Broadcast
+### Broadcast
 
 Broadcast frames are flooded throughout the local VLAN unless a Layer-3 boundary or filtering mechanism stops them.
 
-VLAN Verification
+---
+
+## VLAN Verification
+
+```cisco
 show vlan brief
 
+```
+
 Check:
 
-VLAN exists
-Correct ports assigned
-Port is active
-Trunk Verification
+* VLAN exists
+* Correct ports assigned
+* Port is active
+
+---
+
+## Trunk Verification
+
+```cisco
 show interfaces trunk
 
+```
+
 Check:
 
-Trunk status
-Allowed VLANs
-Native VLAN
-Active VLANs
-STP Verification
+* Trunk status
+* Allowed VLANs
+* Native VLAN
+* Active VLANs
+
+---
+
+## STP Verification
+
+```cisco
 show spanning-tree
 show spanning-tree vlan 10
 show spanning-tree root
 
+```
+
 STP prevents Layer-2 loops by placing redundant paths into a non-forwarding state.
 
-EtherChannel
+---
+
+## EtherChannel
+
+```cisco
 show etherchannel summary
+
+```
 
 Check:
 
-Correct channel-group
-Member interfaces
-LACP/PAgP state
-Port-channel status
-Layer 2 Troubleshooting Questions
-Is the interface physically up?
-Is the correct VLAN assigned?
-Does the VLAN exist?
-Is the trunk operational?
-Is the VLAN allowed?
-Is STP forwarding?
-Is the MAC address learned?
-Is EtherChannel correctly formed?
-Useful Commands
+* Correct channel-group
+* Member interfaces
+* LACP/PAgP state
+* Port-channel status
+
+---
+
+## Layer 2 Troubleshooting Questions
+
+* Is the interface physically up?
+* Is the correct VLAN assigned?
+* Does the VLAN exist?
+* Is the trunk operational?
+* Is the VLAN allowed?
+* Is STP forwarding?
+* Is the MAC address learned?
+* Is EtherChannel correctly formed?
+
+---
+
+## Useful Commands
+
+```cisco
 show vlan brief
 show interfaces switchport
 show interfaces trunk
 show mac address-table
 show spanning-tree
 show etherchannel summary
+
+```
+
+```
+
+```

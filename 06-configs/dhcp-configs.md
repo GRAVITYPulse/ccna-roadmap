@@ -1,5 +1,3 @@
-### `dhcp-configs.md`
-
 ```markdown
 # DHCP Configuration
 
@@ -26,38 +24,61 @@ ip dhcp pool VLAN10
  network 192.168.10.0 255.255.255.0
  default-router 192.168.10.1
  dns-server 8.8.8.8
-Verification
+
+```
+
+## Verification
+
+```cisco
 show ip dhcp pool
 show ip dhcp binding
 show ip dhcp conflict
-DHCP Relay
+
+```
+
+---
+
+# DHCP Relay
 
 When the DHCP server is on another network:
 
+```cisco
 interface GigabitEthernet0/1
  ip helper-address 192.168.100.10
 
-ip helper-address forwards DHCP broadcasts toward the DHCP server.
+```
 
-Troubleshooting
+`ip helper-address` forwards DHCP broadcasts toward the DHCP server.
 
-Check:
+---
 
+# Troubleshooting
+
+## Check
+
+```cisco
 show ip interface brief
 show ip dhcp binding
 show ip dhcp pool
 show running-config | section dhcp
 
-Verify:
+```
 
-DHCP pool network is correct
-Default gateway is correct
-DHCP server is reachable
-Relay address is correct
-Client VLAN is correct
-Interfaces are up
-No conflicting static addressing exists
-DHCP Troubleshooting Flow
+## Verify
+
+* DHCP pool network is correct
+* Default gateway is correct
+* DHCP server is reachable
+* Relay address is correct
+* Client VLAN is correct
+* Interfaces are up
+* No conflicting static addressing exists
+
+---
+
+# DHCP Troubleshooting Flow
+
+```text
 Client
  ↓
 DHCP Discover
@@ -66,6 +87,12 @@ Broadcast
  ↓
 Local DHCP Server?
  ├── Yes → DHCP Server
- └── No → DHCP Relay
+ └── No  → DHCP Relay
              ↓
           DHCP Server
+
+```
+
+```
+
+```

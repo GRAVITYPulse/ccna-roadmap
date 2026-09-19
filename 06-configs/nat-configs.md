@@ -1,5 +1,3 @@
-### `nat-configs.md`
-
 ```markdown
 # NAT Configuration
 
@@ -22,62 +20,111 @@ One inside address maps to one global address.
 
 ```cisco
 ip nat inside source static 192.168.10.10 203.0.113.10
-Dynamic NAT
+
+```
+
+---
+
+# Dynamic NAT
 
 Create a pool:
 
+```cisco
 ip nat pool PUBLIC 203.0.113.10 203.0.113.20 netmask 255.255.255.0
+
+```
 
 Define which inside addresses can be translated:
 
+```cisco
 access-list 1 permit 192.168.10.0 0.0.0.255
+
+```
 
 Configure:
 
+```cisco
 ip nat inside source list 1 pool PUBLIC
-PAT / NAT Overload
+
+```
+
+---
+
+# PAT / NAT Overload
 
 Multiple inside hosts share one global address.
 
+```cisco
 access-list 1 permit 192.168.10.0 0.0.0.255
 
 ip nat inside source list 1 interface GigabitEthernet0/1 overload
-Define NAT Interfaces
+
+```
+
+---
+
+# Define NAT Interfaces
 
 Inside:
 
+```cisco
 interface GigabitEthernet0/0
  ip nat inside
 
+```
+
 Outside:
 
+```cisco
 interface GigabitEthernet0/1
  ip nat outside
-Verification
+
+```
+
+---
+
+# Verification
+
+```cisco
 show ip nat translations
 show ip nat statistics
-Troubleshooting
 
-Check:
+```
 
+---
+
+# Troubleshooting
+
+## Check
+
+```cisco
 show running-config | include ip nat
 show ip nat translations
 show ip nat statistics
 show access-lists
 show ip interface brief
 
-Verify:
+```
 
-Correct inside interface
-Correct outside interface
-Correct ACL
-Correct NAT pool
-Correct route toward outside network
-Return traffic can reach the translated address
-Important
+## Verify
+
+* Correct inside interface
+* Correct outside interface
+* Correct ACL
+* Correct NAT pool
+* Correct route toward outside network
+* Return traffic can reach the translated address
+
+---
+
+# Important
 
 NAT and routing are different functions.
 
-Routing → decides where the packet goes
-NAT     → modifies addressing information
-PAT     → uses ports to allow many flows to share an address
+* **Routing:** Decides where the packet goes
+* **NAT:** Modifies addressing information
+* **PAT:** Uses ports to allow many flows to share an address
+
+```
+
+```
