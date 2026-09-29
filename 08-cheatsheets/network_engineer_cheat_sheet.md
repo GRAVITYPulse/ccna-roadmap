@@ -1,4 +1,3 @@
-```markdown
 # L2 Network Engineer — Quick Cheat Sheet
 *Commands | Troubleshooting | Key Concepts | Most Asked Scenarios*
 *Stay Calm, Think Logical, Solve It :-)*
