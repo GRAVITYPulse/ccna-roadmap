@@ -1,4 +1,4 @@
-```markdown
+
 # ATTA NETWORK ACADEMY
 ## CCNA Complete Lab Solution Notes
 
