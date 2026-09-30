@@ -23,7 +23,7 @@ Comprehensive configuration guide covering VLANs, Trunking, EtherChannel, STP, H
 | DSW2 | fa0/5 | ASW3 | fa0/5 | 802.1Q trunk |
 | DSW2 | fa0/4 | ASW4 | fa0/4 | 802.1Q trunk |
 | DSW2 | g0/1 | R1 | g0/2 | Layer 3 transit |
-| ASW3 | e0/0 | DSW1 | e0/0 | 802.1Q trunk |
+| ASW3 | g0/0 | DSW1 | g0/0 | 802.1Q trunk |
 | ASW3 | fa0/5 | DSW2 | fa0/5 | 802.1Q trunk |
 | ASW3 | fa0/23 | Engineering1 | eth0 | VLAN 10 access |
 | ASW3 | fa0/24 | Sales1 | eth0 | VLAN 20 access |
@@ -66,7 +66,7 @@ Comprehensive configuration guide covering VLANs, Trunking, EtherChannel, STP, H
 | R1 e1/2 | 192.168.100.229/30 |
 | DSW2 e1/2 | 192.168.100.230/30 |
 | ISP / WWW gateway | 203.0.113.1/30 |
-| R1 e0/0 | 203.0.113.2/30 |
+| R1 g0/0 | 203.0.113.2/30 |
 
 ---
 
@@ -224,7 +224,7 @@ Trunks carry multiple VLANs between switches. Manual pruning (allowed VLAN list)
 
 ```cisconetconf
 ! DSW1
-interface e0/0
+interface f0/4
  description TRUNK_TO_ASW3
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
@@ -244,7 +244,7 @@ interface e0/1
  switchport trunk allowed vlan 10,20,99
  no shutdown
 exit
-interface e0/0
+interface f0/5
  description TRUNK_TO_ASW4
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
@@ -252,13 +252,13 @@ interface e0/0
 exit
 
 ! ASW3
-interface e0/0
+interface f0/4
  description TRUNK_TO_DSW1
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
  no shutdown
 exit
-interface e0/1
+interface f0/5
  description TRUNK_TO_DSW2
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
@@ -266,13 +266,13 @@ interface e0/1
 exit
 
 ! ASW4
-interface e0/0
+interface f0/4
  description TRUNK_TO_DSW2
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
  no shutdown
 exit
-interface e0/1
+interface f0/5
  description TRUNK_TO_DSW1
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
@@ -602,7 +602,7 @@ exit
 R1 needs a route for all unknown destinations. The distribution switches learn this default dynamically through OSPF via *default-information originate*.
 
 ```cisconetconf
-interface e0/0
+interface g0/0
  description INTERNET
  ip address 203.0.113.2 255.255.255.252
  no shutdown
@@ -628,16 +628,16 @@ ip access-list standard NAT_INSIDE
  permit 192.168.100.128 0.0.0.63
  permit 192.168.100.192 0.0.0.31
 exit
-interface e1/1
+interface g0/1
  ip nat inside
 exit
-interface e1/2
+interface g0/2
  ip nat inside
 exit
-interface e0/0
+interface g0/0
  ip nat outside
 exit
-ip nat inside source list NAT_INSIDE interface e0/0 overload
+ip nat inside source list NAT_INSIDE interface g0/0 overload
 
 ```
 
