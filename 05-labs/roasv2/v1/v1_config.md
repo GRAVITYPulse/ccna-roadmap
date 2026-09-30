@@ -653,7 +653,7 @@ Port security restricts each client interface to one learned endpoint. Sticky le
 
 ```cisconetconf
 ! ASW3 and ASW4
-interface range e1/1 - 2
+int r fa0/1-3, f0/6-22, g0/1-2
  switchport mode access
  switchport port-security
  switchport port-security maximum 1
