@@ -291,7 +291,7 @@ LACP (IEEE 802.3ad) provides link aggregation and resiliency between the distrib
 
 ```cisconetconf
 ! DSW1
-interface range e0/2 - 3
+interface range f0/2 - 3
  description LACP_TO_DSW2
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
@@ -305,7 +305,7 @@ interface port-channel 1
 exit
 
 ! DSW2
-interface range e0/2 - 3
+interface range f0/2 - 3
  description LACP_TO_DSW1
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
