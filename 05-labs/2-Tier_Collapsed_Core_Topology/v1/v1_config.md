@@ -1,5 +1,4 @@
 
-# ATTA NETWORK ACADEMY
 ## CCNA Complete Lab Solution Notes
 
 Comprehensive configuration guide covering VLANs, Trunking, EtherChannel, STP, HSRP, OSPF, DHCP, NAT/PAT, Port Security and end-to-end verification.
