@@ -801,7 +801,7 @@ Below is a detailed breakdown explaining the purpose, mechanics, and design logi
 * **`banner motd #AUTHORIZED ACCESS ONLY#`**: Displays a legal warning banner prior to login to notify unauthorized users.
 * **`ip domain-name cisco.local` & `crypto key generate rsa modulus 2048**`: Sets the domain name needed to generate RSA key pairs required for secure SSH connections. A 2048-bit key length ensures robust encryption.
 * **`ip ssh version 2`**: Forces SSH to use version 2, disabling vulnerable SSHv1.
-* **`line console 0` & `line vty 0 15**`:
+* **`line console 0` & `line vty 0 15`**:
 * **`logging synchronous`**: Prevents syslog notifications from breaking up CLI command input lines.
 * **`exec-timeout 60 0`**: Automatically logs out inactive sessions after 60 minutes.
 * **`login local`**: Enforces user authentication against the local local database.
