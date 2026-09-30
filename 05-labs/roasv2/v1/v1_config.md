@@ -230,7 +230,7 @@ interface f0/4
  switchport trunk allowed vlan 10,20,99
  no shutdown
 exit
-interface e0/1
+interface f0/5
  description TRUNK_TO_ASW4
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
@@ -238,13 +238,13 @@ interface e0/1
 exit
 
 ! DSW2
-interface e0/1
+interface f0/5
  description TRUNK_TO_ASW3
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
  no shutdown
 exit
-interface f0/5
+interface f0/4
  description TRUNK_TO_ASW4
  switchport mode trunk
  switchport trunk allowed vlan 10,20,99
