@@ -61,10 +61,10 @@ Comprehensive configuration guide covering VLANs, Trunking, EtherChannel, STP, H
 | DSW2 VLAN 99 | 192.168.100.195/27 |
 | ASW3 VLAN 99 | 192.168.100.196/27 |
 | ASW4 VLAN 99 | 192.168.100.197/27 |
-| R1 e1/1 | 192.168.100.225/30 |
-| DSW1 e1/1 | 192.168.100.226/30 |
-| R1 e1/2 | 192.168.100.229/30 |
-| DSW2 e1/2 | 192.168.100.230/30 |
+| R1 g0/1 | 192.168.100.225/30 |
+| DSW1 g0/1 | 192.168.100.226/30 |
+| R1 g0/2 | 192.168.100.229/30 |
+| DSW2 g0/2 | 192.168.100.230/30 |
 | ISP / WWW gateway | 203.0.113.1/30 |
 | R1 g0/0 | 203.0.113.2/30 |
 
@@ -158,13 +158,13 @@ Access ports place each endpoint into exactly one VLAN. No 802.1Q tag is sent to
 
 ```cisconetconf
 ! ASW3
-interface e1/1
+interface f0/23
  description ENGINEERING1
  switchport mode access
  switchport access vlan 10
  no shutdown
 exit
-interface e1/2
+interface f0/24
  description SALES1
  switchport mode access
  switchport access vlan 20
@@ -172,13 +172,13 @@ interface e1/2
 exit
 
 ! ASW4
-interface e1/1
+interface f0/23
  description ENGINEERING2
  switchport mode access
  switchport access vlan 10
  no shutdown
 exit
-interface e1/2
+interface f0/24
  description SALES2
  switchport mode access
  switchport access vlan 20
@@ -371,7 +371,7 @@ spanning-tree portfast default
 spanning-tree portfast bpduguard default
 
 ! Or per-interface on ASW3 / ASW4
-interface range e1/1 - 2
+interface range f0/23-24
  spanning-tree portfast
  spanning-tree bpduguard enable
 exit
@@ -471,19 +471,19 @@ These are routed point-to-point links. The distribution-facing interfaces must b
 
 ```cisconetconf
 ! R1
-interface e1/1
+interface g0/1
  description L3_TO_DSW1
  ip address 192.168.100.225 255.255.255.252
  no shutdown
 exit
-interface e1/2
+interface g0/2
  description L3_TO_DSW2
  ip address 192.168.100.229 255.255.255.252
  no shutdown
 exit
 
 ! DSW1
-interface e1/1
+interface g0/1
  description L3_TO_R1
  no switchport
  ip address 192.168.100.226 255.255.255.252
@@ -491,7 +491,7 @@ interface e1/1
 exit
 
 ! DSW2
-interface e1/2
+interface g0/1
  description L3_TO_R1
  no switchport
  ip address 192.168.100.230 255.255.255.252
@@ -556,10 +556,10 @@ router ospf 1
  network 192.168.100.224 0.0.0.3 area 0
  network 192.168.100.228 0.0.0.3 area 0
 exit
-interface e1/1
+interface g0/1
  ip ospf network point-to-point
 exit
-interface e1/2
+interface g0/2
  ip ospf network point-to-point
 exit
 
@@ -567,13 +567,13 @@ exit
 router ospf 1
  router-id 2.2.2.2
  passive-interface default
- no passive-interface e1/1
+ no passive-interface g0/1
  network 192.168.100.0 0.0.0.127 area 0
  network 192.168.100.128 0.0.0.63 area 0
  network 192.168.100.192 0.0.0.31 area 0
  network 192.168.100.224 0.0.0.3 area 0
 exit
-interface e1/1
+interface g0/1
  ip ospf network point-to-point
 exit
 
@@ -581,13 +581,13 @@ exit
 router ospf 1
  router-id 3.3.3.3
  passive-interface default
- no passive-interface e1/2
+ no passive-interface g0/1
  network 192.168.100.0 0.0.0.127 area 0
  network 192.168.100.128 0.0.0.63 area 0
  network 192.168.100.192 0.0.0.31 area 0
  network 192.168.100.228 0.0.0.3 area 0
 exit
-interface e1/2
+interface g0/1
  ip ospf network point-to-point
 exit
 
