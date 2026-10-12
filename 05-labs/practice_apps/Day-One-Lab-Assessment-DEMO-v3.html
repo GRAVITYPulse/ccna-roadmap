@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day-One Lab Assessment</title>
+<script id="labcfg">window.__LAB_CFG={"formUrl":"","minutes":30,"pin":"","trainer":"","domain":""};</script>
+<script id="labmeta">window.__LABMETA={"id": "d1", "title": "Day-One Lab", "prefix": "D1A", "kx": "uas-day1-fgt-Q7M2", "key": "day-one-assessment-v1-v3", "intro": "Do the day-one setup on a brand-new FortiGate (name, time, admin security, backup), then prove each one.", "rule2": "The 10 tasks are listed on the left. Each is worth 10 points. Use the GUI or the console. Each task has a Hint with the full guide. You can't copy it or paste into the console: type every command yourself. When you finish a task, a short explanation pops up.", "doneMsg": "All ten tasks done: named, on the right time, admin secured, backed up and proven.", "hideReset": true};</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#141518; --panel:#1F2022; --panel2:#26282C; --panel3:#2E3035; --line:#383B41;
+  --text:#ECEAE3; --muted:#9EA1A7; --faint:#6D7077;
+  --gold:#E6BC00; --gold-ink:#1F2022; --blue:#5AA9E6;
+  --ok:#4CC38A; --err:#F2555A; --term:#0E0F11;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--text)}
+body{font-family:var(--sans);font-size:14px;line-height:1.45;padding-inline:16px;padding-block:14px 32px;margin:0}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:30px;height:30px;border-radius:6px;background:var(--gold);display:grid;place-items:center;color:var(--gold-ink);font-weight:700;font-family:var(--mono);font-size:12px}
+.brand h1{margin:0;font-size:18px;font-weight:700}
+.brand p{margin:0;color:var(--muted);font-size:12.5px}
+.top .spacer{flex:1}
+.prog{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.prog .bar{width:140px;height:6px;background:var(--panel3);border-radius:3px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--gold);transition:width .3s}
+.btn{border:1px solid var(--line);background:var(--panel2);padding:6px 12px;border-radius:6px;font-size:13px}
+.btn:hover{background:var(--panel3)}
+.btn.gold{background:var(--gold);color:var(--gold-ink);border-color:var(--gold);font-weight:600}
+.btn.danger{border-color:var(--err);color:var(--err)}
+.btn.sm{padding:3px 9px;font-size:12px}
+
+/* decision view */
+.view{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.eyebrow{margin:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+.stage{flex:1;min-width:130px;border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;text-align:center;background:var(--panel2);transition:border-color .2s,background .2s,opacity .2s}
+.stage b{display:block;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase}
+.stage span{font-size:12px;color:var(--muted)}
+.stage.pass{border-color:var(--ok);background:rgba(76,195,138,.1)}
+.stage.block{border-color:var(--err);background:rgba(242,85,90,.12)}
+.stage.skip{opacity:.35}
+.arrow{align-self:center;color:var(--faint);padding:0 6px;font-size:16px}
+@media (max-width:700px){.arrow{display:none}.flow{gap:6px}}
+.vgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:12px}
+@media (max-width:980px){.vgrid{grid-template-columns:1fr}}
+.mode{border:1.5px solid var(--mc);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.mode h3{margin:0;font-size:17px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.mode h3 small{font-size:13px;font-weight:400;color:var(--mc);font-style:italic}
+.rulebar{background:var(--panel3);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-weight:600;font-size:13px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rulebar.none{font-weight:400;color:var(--faint);border-style:dashed;background:transparent}
+.pill{font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;border:1.5px solid currentColor}
+.pill.a{color:var(--ok)} .pill.d{color:var(--err)}
+.chips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.chips{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.chip{border:1.5px dashed var(--line);border-radius:8px;padding:8px;text-align:center;font-size:12px;color:var(--faint)}
+.chip b{display:block;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.chip.on{border:1.5px solid var(--gold);color:var(--text);background:rgba(230,188,0,.07)}
+.chip.on b{color:var(--gold)}
+.chip.hit{border-color:var(--err);background:rgba(242,85,90,.14)}
+.chip.hit b{color:var(--err)}
+.clabel{font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.srows{display:flex;flex-direction:column;gap:6px}
+.srow{display:grid;grid-template-columns:28px minmax(0,1fr) auto auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:var(--panel2);font-size:12.5px}
+.srow .sq{font-family:var(--mono);color:var(--faint)}
+.srow .app{font-family:var(--mono);font-size:12px;border:1px solid var(--blue);color:var(--blue);border-radius:4px;padding:0 6px;justify-self:start}
+.srow .app.any{border-color:var(--line);color:var(--muted)}
+.srow.imp{opacity:.6;border-style:dashed;background:transparent}
+.srow.hit{box-shadow:0 0 0 2px var(--gold)}
+.srow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.muted{color:var(--muted);font-size:12.5px}
+.tester{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;background:var(--panel2)}
+.tbtns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tbtns button{border:1px solid var(--line);background:var(--panel3);border-radius:6px;padding:7px 8px;text-align:left;font-size:13px}
+.tbtns button:hover{border-color:var(--gold)}
+.tbtns button small{display:block;color:var(--muted);font-size:11px}
+.result{border-radius:8px;padding:10px 12px;font-size:13px;border:1.5px solid var(--line)}
+.result.ok{border-color:var(--ok);background:rgba(76,195,138,.08)}
+.result.bad{border-color:var(--err);background:rgba(242,85,90,.08)}
+.result b.big{display:block;font-size:15px;margin-bottom:3px}
+.result.ok b.big{color:var(--ok)} .result.bad b.big{color:var(--err)}
+
+/* main grid */
+.main{display:grid;grid-template-columns:350px minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:980px){.main{grid-template-columns:1fr}}
+.guide{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.guide h2{margin:0;padding:12px 14px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--line)}
+.step{border-bottom:1px solid var(--line)}
+.step > button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:10px;align-items:center;width:100%;padding:10px 14px}
+.step > button:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.num{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;border:1.5px solid var(--line);color:var(--muted);flex:none}
+.step.done .num{background:var(--ok);border-color:var(--ok);color:#0E2A1C}
+.step.cur .num{border-color:var(--gold);color:var(--gold)}
+.step .t{font-weight:600;flex:1}
+.step.done .t{color:var(--muted)}
+.step .chev{color:var(--faint);font-size:12px}
+.sbody{padding:0 14px 14px 48px;display:flex;flex-direction:column;gap:9px}
+.say{font-size:13px;border-left:3px solid var(--gold);padding:2px 0 2px 10px;font-style:italic}
+.path{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12px}
+.path b{font-weight:500;background:var(--panel3);padding:1px 7px;border-radius:4px}
+.path i{color:var(--faint);font-style:normal}
+.tagl{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.09em;margin-bottom:-4px}
+pre.cli{margin:0;background:var(--term);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:var(--mono);font-size:12px;color:#CFE8D6;overflow-x:auto;line-height:1.5}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.check{font-size:12.5px;color:var(--muted)}
+.check.ok{color:var(--ok)}
+.sub{font-size:12.5px;color:var(--muted)}
+.sub.ok{color:var(--ok)}
+details.extra{border-bottom:1px solid var(--line)}
+details.extra summary{padding:10px 14px;cursor:pointer;font-weight:600;font-size:13px}
+details.extra .in{padding:0 14px 12px;font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.qa{display:flex;flex-direction:column;gap:2px}
+.qa span{color:var(--muted)}
+.mis{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.mis div:nth-child(odd){font-weight:500}
+.mis div:nth-child(even){color:var(--muted)}
+.tasks{padding:12px 14px 16px;display:flex;flex-direction:column;gap:14px}
+.task{display:flex;flex-direction:column;gap:6px}
+.tt{font-weight:600}
+.tn,.intro{font-size:12.5px;color:var(--muted);margin:0}
+.goal{font-size:13px}
+details.hint summary{cursor:pointer;font-size:12px;color:var(--gold)}
+details.hint div{font-size:12.5px;color:var(--muted);padding:4px 0 0 12px}
+
+.ghead{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding-right:12px}
+.ghead h2{border-bottom:none!important}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{border:none;background:transparent;padding:3px 12px;font-size:12px;color:var(--muted)}
+.seg button.on{background:var(--gold);color:var(--gold-ink);font-weight:600}
+ol.gsteps{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:13px}
+.guide .gui-v{display:none}
+.guide.show-gui .gui-v{display:block}
+.guide.show-gui .cli-v{display:none}
+/* workspace */
+.work{display:flex;flex-direction:column;gap:14px;min-width:0}
+.pane-h{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pane-h b{color:var(--text)}
+.pane-h .sp{flex:1}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.gui{background:#F2F3F5;color:#23262B;border-radius:10px;overflow:hidden;border:1px solid var(--line);height:470px;display:flex;flex-direction:column;position:relative;font-size:13px}
+.gbar{background:#2A2D33;color:#E9EAEC;display:flex;align-items:center;gap:10px;padding:0 10px;height:42px;flex:none}
+.gbar .dev{font-weight:700;font-family:var(--mono);font-size:13px;display:flex;align-items:center;gap:7px}
+.gbar .dev i{width:16px;height:16px;border-radius:3px;background:var(--gold);display:inline-block}
+.gbar .sp{flex:1}
+.mchip{font-size:12px;padding:2px 8px;border-radius:4px;background:#3A3E46}
+.gbar .user{font-size:12.5px;color:#C9CCD1}
+.gbody{flex:1;display:flex;min-height:0}
+.gside{width:190px;background:#353941;color:#D5D8DC;overflow-y:auto;flex:none;padding:6px 0}
+.gside .grp{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#8F949C;padding:10px 12px 4px}
+.gside button{all:unset;box-sizing:border-box;display:block;width:100%;padding:6px 12px 6px 20px;cursor:pointer;font-size:13px}
+.gside button:hover{background:#40454E}
+.gside button.on{background:#4A505A;color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+.gside button:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.gmain{flex:1;overflow:auto;padding:14px 16px;min-width:0}
+.gmain h3{margin:0 0 10px;font-size:16px;font-weight:600}
+.gtool{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.gb{border:1px solid #C3C7CE;background:#fff;border-radius:4px;padding:4px 10px;font-size:12.5px;color:#23262B}
+.gb:hover{background:#EEF0F3}
+.gb.pri{background:#2F6FDB;border-color:#2F6FDB;color:#fff}
+.gb.pri:hover{background:#2861C4}
+.gb.del{color:#C4323A}
+.gb.xs{padding:1px 6px}
+.gb:disabled{opacity:.4;cursor:not-allowed}
+table.gt{width:100%;border-collapse:collapse;background:#fff;border:1px solid #D8DBE0;font-size:12.5px}
+table.gt th{text-align:left;background:#E8EAEE;font-weight:600;padding:6px 8px;border-bottom:1px solid #D8DBE0;white-space:nowrap}
+table.gt td{padding:6px 8px;border-bottom:1px solid #ECEEF1;white-space:nowrap}
+table.gt tr.imp td{color:#8A9098;font-style:italic}
+.tw{overflow-x:auto}
+.mono{font-family:var(--mono);font-size:12px}
+.ptag{display:inline-block;font-size:11px;padding:0 6px;border-radius:3px;background:#FFF1B8;color:#6B5200;margin-right:3px}
+.atag{display:inline-block;font-size:11px;padding:0 6px;border-radius:3px;background:#DDEBFA;color:#1F4E86}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.card{background:#fff;border:1px solid #D8DBE0;border-radius:6px;padding:10px 12px}
+.card .k{font-size:11px;color:#6A7079;text-transform:uppercase;letter-spacing:.06em}
+.card .v{font-size:16px;font-weight:600;margin-top:2px}
+.gnote{font-size:12.5px;color:#4E545C;background:#E6EEF9;border:1px solid #C7D8F0;border-radius:4px;padding:7px 10px;margin-bottom:10px}
+.gnote.warn{background:#FFF4DC;border-color:#F0D58C}
+.setrow{background:#fff;border:1px solid #D8DBE0;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.radio{display:flex;gap:8px;align-items:flex-start}
+.radio small{display:block;color:#6A7079}
+.empty{padding:14px;text-align:center;color:#6A7079}
+.gmodal{position:absolute;inset:0;background:rgba(20,22,26,.5);display:grid;place-items:center;padding:14px;z-index:5}
+.gdlg{background:#fff;border-radius:8px;width:min(460px,100%);max-height:100%;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.gdlg h4{margin:0;padding:11px 14px;border-bottom:1px solid #E1E4E8;font-size:14px}
+.gdlg .fb{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.gdlg .sec{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#6A7079;border-top:1px solid #E1E4E8;padding-top:10px;font-weight:600}
+.fld{display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px;font-size:12.5px}
+.fld label{color:#4E545C}
+.fld input,.fld select{border:1px solid #C3C7CE;border-radius:4px;padding:5px 7px;background:#fff;color:#23262B;min-width:0;width:100%}
+.fld .hint{grid-column:2;font-size:11.5px;color:#6A7079;margin-top:-5px}
+.ferr{font-size:12.5px;color:#B3222A;background:#FDECEC;border:1px solid #F3C1C3;border-radius:4px;padding:6px 9px}
+.gdlg .ff{padding:10px 14px;border-top:1px solid #E1E4E8;display:flex;justify-content:flex-end;gap:6px}
+.gtoast{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#23262B;color:#fff;padding:7px 14px;border-radius:6px;font-size:12.5px;z-index:6;max-width:90%}
+.gtoast.err{background:#B3222A} .gtoast.ok{background:#1E7A4F}
+@media (max-width:620px){.gside{width:130px}.fld{grid-template-columns:1fr}.fld .hint{grid-column:1}}
+.termbox{background:var(--term);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;height:330px}
+.tout{flex:1;overflow-y:auto;padding:10px 12px 4px;font-family:var(--mono);font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;color:#D6D9DE}
+.tout .in{color:#fff} .tout .err{color:#FF7B80} .tout .hint{color:var(--gold)} .tout .ok{color:var(--ok)} .tout .dim{color:#7C8088} .tout .blue{color:var(--blue)}
+.tline{display:flex;align-items:center;padding:4px 12px 10px;font-family:var(--mono);font-size:12.5px}
+.tline .pr{color:#8FD3A8;white-space:pre}
+.tline input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:var(--mono);font-size:12.5px;padding:2px 0 2px 2px;min-width:0}
+.tfoot{font-size:12px;color:var(--faint);display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+.tfoot kbd{font-family:var(--mono);font-size:11px;background:var(--panel3);border:1px solid var(--line);border-radius:3px;padding:0 4px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* checklist */
+.lead{margin:0;font-size:13.5px;color:var(--muted)}
+.clist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.clist{grid-template-columns:1fr}}
+.citem{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;border:1px solid var(--line);border-radius:8px;padding:11px 13px;background:var(--panel2);transition:border-color .25s,background .25s}
+.citem .n{width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--gold-ink);display:grid;place-items:center;font-weight:700;font-size:15px}
+.citem.ok{border-color:var(--ok);background:rgba(76,195,138,.07)}
+.citem.ok .n{background:var(--ok);color:#0E2A1C}
+.citem h4{margin:0;font-size:15px}
+.citem p{margin:2px 0 6px;font-size:12.5px;color:var(--muted)}
+.ev{display:flex;flex-wrap:wrap;gap:6px}
+.chipx{font-family:var(--mono);font-size:11.5px;padding:1px 7px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
+.chipx.good{border-color:var(--ok);color:var(--ok)}
+.chipx.bad{border-color:var(--err);color:#FF9A9E}
+.tbtns.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.tbtns.four{grid-template-columns:1fr 1fr}}
+.meter{height:6px;border-radius:3px;background:#E1E4E8;overflow:hidden}
+.meter i{display:block;height:100%}
+.umenu{position:absolute;top:40px;right:8px;background:#fff;color:#23262B;border:1px solid #D8DBE0;border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:4;min-width:190px;padding:4px 0}
+.umenu button{all:unset;display:block;box-sizing:border-box;width:100%;padding:7px 12px;cursor:pointer;font-size:13px}
+.umenu button:hover{background:#EEF0F3}
+.umenu .gl{font-size:11px;color:#6A7079;padding:6px 12px 2px;text-transform:uppercase;letter-spacing:.06em}
+.gbar .ub{background:transparent;border:1px solid #50555E;border-radius:4px;padding:2px 8px;font-size:12.5px;color:#E9EAEC}
+.asx-ov{position:fixed;inset:0;z-index:60;background:rgba(10,11,13,.82);backdrop-filter:blur(3px);overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:40px 16px}
+.asx-ov[hidden]{display:none!important}
+body.asx-lock{overflow:hidden}
+.asx-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px;width:min(560px,100%);display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.asx-card.wide{width:min(760px,100%)}
+.asx-card h2{margin:0;font-size:21px}
+.asx-card h3{margin:8px 0 0;font-size:14px;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.asx-card p{margin:0;font-size:13.5px;line-height:1.5}
+.asx-card label{font-size:12.5px;color:var(--muted);margin-top:4px}
+.asx-card input,.asx-card textarea{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:9px 11px;color:var(--text);font:inherit;width:100%}
+.asx-card textarea{font-family:var(--mono);font-size:12px}
+.asx-card .btn{align-self:flex-start}
+.asx-rules{margin:0;padding-left:20px;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.asx-muted{color:var(--muted);font-size:12.5px}
+.asx-warn{border:1px solid #F0A43A;background:rgba(240,164,58,.1);border-radius:6px;padding:8px 10px;color:#F6C27A}
+.asx-err{color:#FF9A9E}
+.asx-ok{color:var(--ok)}
+.asx-score{display:flex;align-items:baseline;gap:6px}
+.asx-score b{font-size:54px;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.asx-score span{color:var(--muted);font-size:18px}
+.asx-find{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.asx-find li{border:1px solid var(--line);border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:3px;font-size:13px;background:var(--panel2)}
+.asx-find li span{color:var(--text)}
+.asx-find li em{font-style:normal;color:var(--gold);font-size:12.5px}
+.asx-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#1B1D21;border:1px solid var(--gold);border-radius:10px;padding:8px 12px;font-size:13px}
+.asx-bar .sp{flex:1}
+.asx-time{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums}
+.asx-time.low{color:var(--err)}
+.asx-ro{pointer-events:none;opacity:.8}
+.asx-dash{width:min(1300px,100%);display:flex;flex-direction:column;gap:14px}
+.asx-dh{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.asx-dh h2{margin:0;font-size:22px}
+.asx-dh .sp{flex:1}
+.asx-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,2fr);gap:10px}
+@media (max-width:900px){.asx-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.asx-tiles .wide{grid-column:1/-1}}
+.asx-tiles div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:2px}
+.asx-tiles span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.asx-tiles b{font-size:24px;font-variant-numeric:tabular-nums}
+.asx-set{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:13px}
+.asx-set input{width:64px;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:4px 6px;color:var(--text)}
+.asx-set .sp{flex:1}
+.asx-csv{width:100%;min-height:120px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;font-family:var(--mono);font-size:11.5px}
+.asx-tw{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.asx-t{width:100%;border-collapse:collapse;font-size:13px}
+.asx-t th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.asx-t td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.asx-t td small{display:block;color:var(--muted);font-size:11.5px}
+.asx-t tr.sel td{background:rgba(230,188,0,.06)}
+.asx-num{font-variant-numeric:tabular-nums;font-family:var(--mono);white-space:nowrap}
+.asx-empty{text-align:center;color:var(--muted);padding:22px!important}
+.asx-chip{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap;border:1px solid}
+.asx-chip.run{color:var(--gold);border-color:var(--gold)}
+.asx-chip.ok{color:var(--ok);border-color:var(--ok)}
+.asx-chip.warn{color:#F0A43A;border-color:#F0A43A}
+.asx-seg{display:inline-flex;gap:3px}
+.asx-seg i{width:12px;height:12px;border-radius:3px;background:var(--panel3);border:1px solid var(--line)}
+.asx-seg i.on{background:var(--ok);border-color:var(--ok)}
+.asx-det{background:var(--panel);border:1px solid var(--gold);border-radius:10px;padding:14px 16px}
+.asx-det h3{margin:0 0 8px;font-size:16px}
+.asx-det h4{margin:10px 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.asx-cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px}
+@media (max-width:900px){.asx-cols{grid-template-columns:1fr}}
+.asx-fails{margin:0;padding-left:18px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.asx-tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:12.5px}
+.asx-tl li{display:flex;justify-content:space-between;gap:10px;color:var(--faint);border-bottom:1px dashed var(--line);padding-bottom:3px}
+.asx-tl li.on{color:var(--text)}
+.asx-tl li.on b{color:var(--ok)}
+.asx-send{border:1px solid var(--gold);background:rgba(230,188,0,.06);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.asx-send details summary{cursor:pointer;font-size:12.5px;color:var(--muted)}
+.asx-send details{display:flex;flex-direction:column;gap:6px}
+.asx-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+a.btn{text-decoration:none;display:inline-block}
+.asx-guide{user-select:none;-webkit-user-select:none;-ms-user-select:none;display:flex;flex-direction:column;gap:6px;margin-top:6px;padding:8px 10px!important;border:1px dashed rgba(240,190,60,.45);border-radius:8px;background:rgba(240,190,60,.05);font-family:inherit!important;color:inherit}
+.asx-guide *{user-select:none;-webkit-user-select:none}
+.asx-g-gui{font-size:12.5px;line-height:1.45}
+.asx-g-cli{display:flex;flex-direction:column;gap:3px;font-size:12px}
+.asx-g-cli b{font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.asx-g-cli code{font-family:Consolas,"Cascadia Mono",monospace;font-size:12.5px;background:#0b0d10;color:#9FE2B4;border-radius:4px;padding:3px 8px;display:block;white-space:pre-wrap}
+.asx-g-cli code.act{color:#b9c2cc;font-style:italic;font-family:inherit}
+.asx-pop{position:fixed;inset:0;z-index:70;background:rgba(8,10,12,.55);display:flex;align-items:center;justify-content:center;padding:16px;--line:#2b3540;--muted:#8d99a6;--gold:#f2c14e;--gold-ink:#111;--text:#e8edf2;--panel:#171d23;--panel2:#11161b;--panel3:#26303a;--ok:#3ecf8e;--err:#ff6b6b;color:var(--text);font:14px/1.45 "Lato","Segoe UI",system-ui,sans-serif}
+.asx-pop[hidden]{display:none!important}
+.asx-pcard{background:var(--panel);border:1px solid var(--ok);border-radius:12px;padding:18px 20px;width:min(620px,100%);max-height:calc(100vh - 32px);overflow:auto;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.asx-ptop{display:flex;gap:12px;align-items:center}
+.asx-pok{flex:none;width:38px;height:38px;border-radius:50%;background:var(--ok);color:#0b1a12;display:grid;place-items:center;font-weight:900;font-size:20px}
+.asx-ptop small{color:var(--muted);font-size:12px}
+.asx-ptop h3{margin:0;font-size:18px}
+.asx-pwhy{margin:0;font-size:14px}
+.asx-pwhy b{color:var(--gold)}
+.asx-pcmds b{display:block;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.asx-pcmds table{width:100%;border-collapse:collapse;font-size:13px}
+.asx-pcmds td{padding:5px 8px;border-top:1px solid var(--line);vertical-align:top}
+.asx-pcmds td:first-child{width:46%}
+.asx-pcmds code{font-family:Consolas,"Cascadia Mono",monospace;color:#9FE2B4;white-space:pre-wrap}
+.asx-pcard .btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 16px;border-radius:6px;font:inherit;font-weight:700;cursor:pointer}
+.asx-pcard .btn.gold{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+.asx-pcard .asx-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.asx-pcard .asx-muted{color:var(--muted);font-size:12.5px}
+.asx-tip{position:fixed;z-index:80;background:#2a1414;color:#ffb3b3;border:1px solid #ff6b6b;border-radius:6px;padding:6px 10px;font:12.5px "Segoe UI",system-ui,sans-serif;pointer-events:none}
+.asx-tip[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="mark">D1</div>
+      <div><h1>Day-One FortiGate Lab</h1><p>Four things on every FortiGate, in this order, before anything else.</p></div></div>
+    <div class="spacer"></div>
+    <div class="prog"><span id="progTxt">0 of 10 tasks</span><div class="bar"><i id="progBar" style="width:0"></i></div></div>
+    <button class="btn" id="resetBtn" type="button">Reset lab</button>
+  </header>
+
+  <section class="view" aria-label="Day-one checklist">
+    <p class="lead">A brand-new FortiGate, straight out of the box. Do these four things in order. Each card turns green when it's really done.</p>
+    <div class="clist" id="clist"></div>
+    <div class="tester">
+      <p class="eyebrow">Prove it</p>
+      <div class="tbtns four">
+        <button type="button" data-act="test" data-s="log">Check a log's time<small>is the timestamp right?</small></button>
+        <button type="button" data-act="test" data-s="idle">Walk away for 15 min<small>GUI left open</small></button>
+        <button type="button" data-act="test" data-s="lockout">Someone guesses 5 times<small>wrong passwords</small></button>
+        <button type="button" data-act="test" data-s="restore">The box dies right now<small>what can you restore?</small></button>
+      </div>
+      <div id="result"></div>
+    </div>
+  </section>
+
+  <div class="main">
+    <aside class="guide" aria-label="Your tasks">
+      <div class="ghead"><h2>Your 10 tasks</h2></div>
+      <div id="steps"></div>
+      <p class="muted" style="font-size:12px;padding:8px 14px 12px;margin:0">Use the GUI or the console, whichever you like. A task turns green when it's really done.</p>
+    </aside>
+
+    <div class="work">
+      <div>
+        <div class="pane-h"><span class="dot"></span><b>GUI</b><span>https://192.168.1.99 · lab simulator</span></div>
+        <div class="gui" id="gui"></div>
+      </div>
+      <div>
+        <div class="pane-h"><span class="dot" style="background:var(--gold)"></span><b>Console</b><span>CLI · same device</span><span class="sp"></span><button class="btn sm" id="clearBtn" type="button">Clear</button></div>
+        <div class="termbox" id="termbox">
+          <div class="tout" id="tout" aria-live="polite"></div>
+          <div class="tline"><span class="pr" id="tprompt"></span><input id="tin" autocomplete="off" spellcheck="false" aria-label="CLI command"></div>
+        </div>
+        <div class="tfoot"><span><kbd>Tab</kbd> complete</span><span><kbd>↑</kbd><kbd>↓</kbd> history</span><span><kbd>?</kbd> what can I type here</span><span><kbd>lab test log | idle | lockout | restore</kbd> prove it (lab-only)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const DEF_HOST="FortiGate-VM64";
+const TZ={"Asia/Manila":8,"Asia/Singapore":8,"Asia/Tokyo":9,"UTC":0,"America/Los_Angeles":-7,"America/New_York":-4,"Europe/London":1};
+const DEF_TZ="America/Los_Angeles";
+
+/* ---------- state ---------- */
+let S, tick=0;
+function fresh(){ return {
+  host:DEF_HOST, tz:DEF_TZ, ntp:{sync:"disable", type:"fortiguard", servers:[]}, synced:false,
+  pw:"", timeout:5, thr:3, dur:60,
+  backups:[], events:[], done:{}, last:null,
+  page:"dashboard", modal:null, toast:null, umenu:false, openStep:null }; }
+S=fresh();
+/* clocks: a wrong factory clock until NTP syncs */
+const TRUE_UTC=Date.UTC(2026,8,25,1,12,0), WRONG=Date.UTC(2021,2,14,3,12,40);
+function pad(n){ return String(n).padStart(2,"0"); }
+function fmt(ms){ const d=new Date(ms); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`; }
+function nowMs(){ tick+=11; return S.synced ? TRUE_UTC+tick*1000+(TZ[S.tz]||0)*3600000 : WRONG+tick*1000; }
+function peekNow(){ return S.synced ? TRUE_UTC+tick*1000+(TZ[S.tz]||0)*3600000 : WRONG+tick*1000; }
+function timeOk(){ return S.synced && S.tz==="Asia/Manila"; }
+function log(msg){ S.events.unshift({time:fmt(nowMs()), msg, good:timeOk()}); }
+
+/* ---------- rules ---------- */
+function hostOk(h=S.host){ return h!==DEF_HOST && /^FGT-[A-Za-z0-9-]+$/.test(h); }
+function pwStrength(p){ let s=0; if(p.length>=12) s++; if(/[a-z]/.test(p)&&/[A-Z]/.test(p)) s++; if(/\d/.test(p)) s++; if(/[^A-Za-z0-9]/.test(p)) s++; return p?s:0; }
+function pwOk(p=S.pw){ return pwStrength(p)===4; }
+function adminOk(x=S){ return pwOk(x.pw) && x.timeout>=1 && x.timeout<=15 && x.thr>=1 && x.thr<=5 && x.dur>=300; }
+function snapshot(){ return {host:S.host, tz:S.tz, synced:S.synced, ntp:S.ntp.sync, pw:S.pw, timeout:S.timeout, thr:S.thr, dur:S.dur}; }
+function takeBackup(where){ const d=new Date(peekNow()); const name=`${S.host}_7-4_${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}_${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}.conf`;
+  const b={name, where, time:fmt(nowMs()), snap:snapshot()}; S.backups.unshift(b); log(`Configuration backed up to ${where} (${name})`); return b; }
+function syncNtp(){
+  if(S.ntp.sync!=="enable"){ S.synced=false; return {msg:"NTP sync is off. The clock stays where it is."}; }
+  if(S.ntp.type==="custom" && !S.ntp.servers.length) return {warn:"NTP is custom but no server is set.", hint:"config ntpserver → edit 1 → set server pool.ntp.org"};
+  const was=S.synced; S.synced=true; if(!was) log(`System time synchronized with ${S.ntp.type==="fortiguard"?"FortiGuard NTP":S.ntp.servers[0]}`);
+  return {msg:`Time synchronized with ${S.ntp.type==="fortiguard"?"FortiGuard NTP servers":S.ntp.servers.join(", ")}.`};
+}
+
+/* ---------- tests ---------- */
+function evaluate(k){
+  const r={k};
+  if(k==="log"){ const e=S.events[0]; const t=fmt(peekNow()); r.label="Check a log's time";
+    r.ok=timeOk(); r.why = !S.synced ? `The newest log says ${t}. That's 2021: the factory clock was never set. Nobody can line this log up with anything else.` : !r.ok ? `The clock is synced, but the timezone is ${S.tz}. The log says ${t}, not Manila time.` : `The newest log says ${t}, Manila time. It matches every other system.`;
+    if(r.ok && S.events.some(x=>!x.good)) r.why+=" Look at Log & Report: the changes made before the clock was fixed still say 2021.";
+    return r; }
+  if(k==="idle"){ r.label="Walk away for 15 min"; r.ok=S.timeout<=15;
+    r.why = r.ok ? `After ${S.timeout} idle minutes the session closed itself. Nobody can use your open GUI.` : `The idle timeout is ${S.timeout} minutes. After 15 minutes the GUI is still open for anyone who walks by.`; return r; }
+  if(k==="lockout"){ r.label="Someone guesses 5 times";
+    if(!S.pw){ r.ok=false; r.why="They didn't need to guess. The admin password is blank."; return r; }
+    if(!pwOk()){ r.ok=false; r.why="The password is weak. A few guesses from a common list could find it."; return r; }
+    if(S.thr>5){ r.ok=false; r.why=`Lockout only starts after ${S.thr} failed tries. Five guesses and they're still trying.`; return r; }
+    r.ok=S.dur>=300; r.why = r.ok ? `After ${S.thr} wrong tries, their address is locked out for ${S.dur/60} minutes. Guessing becomes very slow.` : `After ${S.thr} wrong tries they're locked out for only ${S.dur} seconds, then they can try again. Make it at least 300.`; return r; }
+  if(k==="restore"){ r.label="The box dies right now"; const b=S.backups[0];
+    if(!b){ r.ok=false; r.why="There's no backup. You'd start again from the factory settings. That's the afternoon gone."; return r; }
+    const s=b.snap, miss=[]; if(!hostOk(s.host)) miss.push("the name"); if(!(s.synced&&s.tz==="Asia/Manila")) miss.push("the time settings"); if(!adminOk(s)) miss.push("the admin security");
+    r.ok=!miss.length; r.why = r.ok ? `You'd restore ${b.name} in seconds, with the name, time and admin settings all in it.` : `You'd restore ${b.name}, but it was taken too early. It doesn't have ${miss.join(", ")}. Back up again after every working change.`; return r; }
+}
+let LASTE=null;
+function runTest(k,quiet){ const r=evaluate(k); S.last=r; if(r.ok){ PV[k]=true; S.pv=Object.assign({},PV); } else if(!quiet) LASTE={ok:false,why:`Prove it (${r.label}): ${r.why}`}; if(!quiet){ tprint(`[lab] ${r.label}`,"blue"); tprint("  "+r.why, r.ok?"ok":"err"); } return r; }
+
+/* ---------- steps ---------- */
+const PV={};
+const goodBackup=()=>S.backups.some(b=>hostOk(b.snap.host)&&b.snap.synced&&b.snap.tz==="Asia/Manila"&&adminOk(b.snap));
+const STEPS=[
+ {t:"Rename the firewall to FGT-HQ", h:"System › Settings › Host name, or: config system global › set hostname ... › end", check:()=>S.host==="FGT-HQ"},
+ {t:"Turn on NTP time sync (FortiGuard servers)", h:"System › Settings › Set Time: NTP, or: config system ntp › set ntpsync enable › set type fortiguard › end", check:()=>S.synced},
+ {t:"Set the timezone to Asia/Manila", h:"System › Settings › Time Zone, or: config system global › set timezone ... › end", check:()=>S.tz==="Asia/Manila"},
+ {t:"Give admin a strong password", h:"12+ characters with upper and lower case, a number and a symbol. System › Administrators › admin, or: config system admin › edit admin › set password ...", check:()=>pwOk()},
+ {t:"Set the idle timeout to 10 minutes", h:"System › Settings › Idle timeout, or: config system global › set admintimeout ...", check:()=>S.timeout===10},
+ {t:"Lock out after 3 wrong tries for 300 seconds", h:"CLI only: config system global › set admin-lockout-threshold ... › set admin-lockout-duration ... › end", check:()=>S.thr>=1&&S.thr<=3&&S.dur>=300},
+ {t:"Take a backup after the settings above are done", h:"admin ▾ › Configuration › Backup, or: execute backup config flash <comment>", check:()=>goodBackup()},
+ {t:"Prove it: Check a log's time (must be green)", h:"Press the Prove it button, or type: lab test log", check:()=>!!PV.log},
+ {t:"Prove it: Walk away and Someone guesses (both green)", h:"Press both buttons, or type: lab test idle, then lab test lockout", check:()=>!!(PV.idle&&PV.lockout)},
+ {t:"Prove it: The box dies right now (must be green)", h:"Press the button, or type: lab test restore", check:()=>!!PV.restore}
+];
+function stepDone(i){ if(S.done[i]) return true; if(STEPS[i].check()){ S.done[i]=true; return true; } return false; }
+function curStep(){ for(let i=0;i<STEPS.length;i++) if(!stepDone(i)) return i; return -1; }
+
+/* ---------- render: view ---------- */
+function renderView(){
+  const b=S.backups[0];
+  const chip=(t,g)=>`<span class="chipx ${g===true?"good":g===false?"bad":""}">${esc(t)}</span>`;
+  const items=[
+    [hostOk(),"Give it a name",'A firewall called "FortiGate" tells you nothing when you have six of them. Name it for its site and role: FGT-HQ, FGT-BRANCH.',
+      chip(S.host, hostOk())],
+    [timeOk(),"Set the correct time","Point it at a time server (NTP) and set the right timezone. Do this before you make any other change.",
+      chip(fmt(peekNow()), timeOk())+chip(S.tz, S.tz==="Asia/Manila")+chip("NTP "+(S.synced?"synced":"off"), S.synced)],
+    [adminOk(),"Secure the admin account","Strong password, an idle timeout so an unattended session closes itself, and a lockout after a few failed attempts.",
+      chip("password "+(!S.pw?"blank":pwOk()?"strong":"weak"), pwOk())+chip(`idle ${S.timeout} min`, S.timeout<=15)+chip(`lockout ${S.thr} tries · ${S.dur}s`, S.thr<=5&&S.dur>=300)],
+    [goodBackup(),"Take a backup","Before you configure anything and after every working change. A backup takes ten seconds and saves entire afternoons.",
+      b?chip(b.name, goodBackup())+chip(`${S.backups.length} backup${S.backups.length>1?"s":""}`):chip("no backup yet", false)]
+  ];
+  $("#clist").innerHTML=items.map(([ok,t,d,ev],i)=>`<div class="citem${ok?" ok":""}"><span class="n">${ok?"✓":i+1}</span><div><h4>${t}</h4><p>${d}</p><div class="ev">${ev}</div></div></div>`).join("");
+  const r=S.last;
+  $("#result").innerHTML=r?`<div class="result ${r.ok?"ok":"bad"}"><b class="big">${esc(r.label)}: ${r.ok?"protected":"not yet"}</b>${esc(r.why)}</div>`:`<div class="result"><span class="muted">Press a Prove it button to see what each setting protects you from.</span></div>`;
+}
+
+/* ---------- guide ---------- */
+let lastCur=null, guideMode="cli";
+let guideBuilt=false;
+function renderGuide(){
+  const box=document.getElementById("steps"); if(!box) return;
+  if(!guideBuilt){ guideBuilt=true; box.innerHTML=STEPS.map((x,i)=>`<div class="step" data-task="${i}" style="padding:8px 14px;border-bottom:1px solid var(--line)"><div style="display:flex;gap:9px;align-items:flex-start"><span class="num">${i+1}</span><div><div class="t" style="font-size:13.5px">${esc(x.t)}</div><details class="hint"><summary>Hint</summary><div>${esc(x.h)}</div></details></div></div></div>`).join(""); }
+  const cur=curStep(), done=STEPS.filter((_,i)=>stepDone(i)).length;
+  $("#progTxt").textContent=`${done} of ${STEPS.length} tasks`; $("#progBar").style.width=(done/STEPS.length*100)+"%";
+  box.querySelectorAll("[data-task]").forEach((el,i)=>{ const d=stepDone(i); el.classList.toggle("done",d); el.classList.toggle("cur",i===cur); el.querySelector(".num").textContent=d?"✓":i+1; });
+}
+
+/* ---------- GUI ---------- */
+function menu(){ return [{g:null,items:[["dashboard","Dashboard"]]},{g:"System",items:[["settings","Settings"],["admins","Administrators"]]},{g:"Log & Report",items:[["events","System Events"]]}]; }
+function renderGUI(){
+  const m=menu(); if(!m.flatMap(g=>g.items.map(x=>x[0])).includes(S.page)) S.page="dashboard";
+  $("#gui").innerHTML=`<div class="gbar"><span class="dev"><i></i>${esc(S.host)}</span><span class="sp"></span><button class="ub" type="button" data-act="umenu">admin ▾</button></div>
+   ${S.umenu?`<div class="umenu"><div class="gl">Configuration</div><button type="button" data-act="bk">Backup</button><button type="button" data-act="revs">Revisions</button></div>`:""}
+   <div class="gbody"><nav class="gside">${m.map(g=>`${g.g?`<div class="grp">${g.g}</div>`:""}${g.items.map(([id,l])=>`<button type="button" data-act="nav" data-p="${id}" class="${S.page===id?"on":""}">${l}</button>`).join("")}`).join("")}</nav>
+   <div class="gmain">${page()}</div></div>${S.modal?modalHTML():""}${S.toast?`<div class="gtoast ${S.toast.k||""}">${esc(S.toast.m)}</div>`:""}`;
+}
+function page(){
+  if(S.page==="dashboard"){ const c=[["Hostname",S.host],["System time",fmt(peekNow())],["Time zone",S.tz],["Firmware","v7.4 (lab)"]];
+    return `<h3>Dashboard</h3><div class="cards">${c.map(([k,v])=>`<div class="card"><div class="k">${k}</div><div class="v" style="font-size:14px">${esc(v)}</div></div>`).join("")}</div>
+      ${!S.pw?`<div class="gnote warn">The admin account has no password.</div>`:""}
+      <div class="setrow" style="flex-direction:row;align-items:center"><div style="flex:1"><b>Configuration backups</b><div style="color:#6A7079;font-size:12px">${S.backups.length?`Latest: ${esc(S.backups[0].name)}`:"No backup taken yet"}</div></div><button class="gb pri" type="button" data-act="bk">Backup…</button></div>`; }
+  if(S.page==="settings") return `<h3>Settings</h3><form data-form="settings">
+    <div class="setrow"><b>System Settings</b><div class="fld"><label for="sHost">Host name</label><input id="sHost" value="${esc(S.host)}" autocomplete="off"></div></div>
+    <div class="setrow"><b>System Time</b>
+      <div class="fld"><label>Current system time</label><div class="mono">${fmt(peekNow())}</div></div>
+      <div class="fld"><label for="sTz">Time Zone</label>${sel("sTz",Object.keys(TZ),S.tz)}</div>
+      <div class="fld"><label for="sSet">Set Time</label>${sel("sSet",["NTP","Manual (not recommended)"],S.ntp.sync==="enable"?"NTP":"Manual (not recommended)")}</div>
+      <div class="fld"><label for="sSrv">Select server</label>${sel("sSrv",["Use FortiGuard servers","pool.ntp.org"],S.ntp.type==="custom"?"pool.ntp.org":"Use FortiGuard servers")}</div></div>
+    <div class="setrow"><b>Administration Settings</b><div class="fld"><label for="sIdle">Idle timeout</label><input id="sIdle" type="number" min="1" max="480" value="${S.timeout}"><div class="hint">Minutes before an unused session closes itself.</div></div>
+      <div class="fld"><label>Lockout</label><div style="color:#6A7079">CLI only: admin-lockout-threshold ${S.thr} · admin-lockout-duration ${S.dur}s</div></div></div>
+    <div id="setErr"></div><button class="gb pri" type="submit">Apply</button></form>`;
+  if(S.page==="admins") return `<h3>Administrators</h3><div class="tw"><table class="gt"><thead><tr><th>Name</th><th>Profile</th><th>Password</th><th></th></tr></thead><tbody>
+    <tr><td class="mono">admin</td><td>super_admin</td><td>${!S.pw?'<span style="color:#B3222A;font-weight:600">Blank</span>':pwOk()?'<span style="color:#1E7A4F">Strong</span>':'<span style="color:#8A5A00">Weak</span>'}</td><td><button class="gb xs" type="button" data-act="pwModal">Change Password</button></td></tr></tbody></table></div>`;
+  if(S.page==="events") return `<h3>System Events</h3><div class="tw"><table class="gt"><thead><tr><th>Date/Time</th><th>Message</th></tr></thead><tbody>
+    ${S.events.length?S.events.map(e=>`<tr><td class="mono" style="color:${e.good?"#1E7A4F":"#B3222A"}">${e.time}</td><td>${esc(e.msg)}</td></tr>`).join(""):`<tr><td colspan="2" class="empty">No events yet.</td></tr>`}</tbody></table></div>
+    <div class="gnote" style="margin-top:10px">Red times were written before the clock was right. They stay wrong forever.</div>`;
+  if(S.page==="revs") return `<h3>Revisions</h3><div class="tw"><table class="gt"><thead><tr><th>File</th><th>Saved to</th><th>Taken at</th></tr></thead><tbody>${S.backups.length?S.backups.map(b=>`<tr><td class="mono">${esc(b.name)}</td><td>${b.where}</td><td class="mono">${b.time}</td></tr>`).join(""):`<tr><td colspan="3" class="empty">No backups yet.</td></tr>`}</tbody></table></div>`;
+  return "";
+}
+function sel(id,opts,cur){ return `<select id="${id}">${opts.map(o=>`<option${cur===o?" selected":""}>${esc(o)}</option>`).join("")}</select>`; }
+function modalHTML(){
+  const M=S.modal, err=M.err?`<div class="ferr">${esc(M.err)}${M.hint?`<br>${esc(M.hint)}`:""}</div>`:"";
+  const wrap=(t,b,f,ok="OK")=>`<div class="gmodal"><form class="gdlg" data-form="${f}"><h4>${esc(t)}</h4><div class="fb">${b}${err}</div><div class="ff"><button class="gb" type="button" data-act="closeModal">Cancel</button><button class="gb pri" type="submit">${ok}</button></div></form></div>`;
+  if(M.type==="pw") return wrap("Change Password · admin", `<div class="fld"><label for="p1">New password</label><input id="p1" type="password" autocomplete="new-password"></div>
+     <div class="fld"><label>Strength</label><div><div class="meter"><i id="pm" style="width:0"></i></div><div id="pmt" style="font-size:11.5px;color:#6A7079;margin-top:3px">12+ characters, upper and lower case, a number and a symbol.</div></div></div>
+     <div class="fld"><label for="p2">Confirm password</label><input id="p2" type="password" autocomplete="new-password"></div>`,"savePw");
+  if(M.type==="bk") return wrap("Backup System Configuration", `<div class="fld"><label for="bTo">Backup to</label>${sel("bTo",["Local PC","USB Disk"],"Local PC")}</div><div class="fld"><label>File name</label><div class="mono" style="font-size:11.5px">${esc(S.host)}_7-4_….conf</div></div>`,"doBk");
+  return "";
+}
+let toastT; function toast(m,k){ S.toast={m,k}; clearTimeout(toastT); toastT=setTimeout(()=>{S.toast=null;renderGUI();},2600); }
+function renderAll(){ renderView(); renderGuide(); renderGUI(); updatePrompt(); if(window.__onLabChange) try{ window.__onLabChange(); }catch(_){ } }
+
+document.addEventListener("click",e=>{
+  if(S.umenu && !e.target.closest(".umenu") && !e.target.closest('[data-act="umenu"]')){ S.umenu=false; renderGUI(); }
+  const b=e.target.closest("[data-act]"); if(!b) return; const a=b.dataset.act;
+  switch(a){
+    case "step":{ const i=+b.dataset.i; const cur=S.openStep===null?curStep():S.openStep; S.openStep=cur===i?-2:i; renderGuide(); return; }
+    case "run": runScript(STEPS[+b.dataset.i].cli); return;
+    case "gmode": guideMode=b.dataset.m; document.querySelector(".guide").classList.toggle("show-gui",guideMode==="gui"); document.querySelectorAll('[data-act="gmode"]').forEach(x=>x.classList.toggle("on",x.dataset.m===guideMode)); renderGuide(); return;
+    case "goto": S.page=b.dataset.p; S.modal=null; renderGUI(); $("#gui").scrollIntoView({block:"nearest",behavior:"smooth"}); return;
+    case "copy":{ const t=(STEPS[+b.dataset.i].cliShow||STEPS[+b.dataset.i].cli).join("\n"); try{ navigator.clipboard.writeText(t).then(()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy",1400);}).catch(()=>b.textContent="Select it above"); }catch(_){ b.textContent="Select it above"; } return; }
+    case "test": runTest(b.dataset.s); markProved(b.dataset.s); renderAll(); return;
+    case "nav": S.page=b.dataset.p; S.modal=null; renderGUI(); return;
+    case "umenu": S.umenu=!S.umenu; renderGUI(); return;
+    case "bk": S.umenu=false; S.modal={type:"bk"}; renderGUI(); return;
+    case "revs": S.umenu=false; S.page="revs"; renderGUI(); return;
+    case "closeModal": S.modal=null; renderGUI(); return;
+    case "pwModal": S.modal={type:"pw"}; renderGUI(); const p=$("#p1"); if(p) p.focus(); return;
+  }
+});
+const proved=new Set(); function markProved(k){ proved.add(k); if(proved.size===4) S.proved=true; }
+document.addEventListener("input",e=>{ if(e.target.id==="p1"){ const s=pwStrength(e.target.value); const c=["#B3222A","#B3222A","#E08A1E","#E0C21E","#1E7A4F"][s]; $("#pm").style.width=(s*25)+"%"; $("#pm").style.background=c; $("#pmt").textContent=["Too weak","Weak","Fair","Almost","Strong"][s]; } });
+document.addEventListener("submit",e=>{
+  e.preventDefault(); const f=e.target.dataset.form, M=S.modal;
+  if(f==="settings"){ const h=$("#sHost").value.trim(), tz=$("#sTz").value, ntpOn=$("#sSet").value==="NTP", srv=$("#sSrv").value, idle=+$("#sIdle").value;
+    if(!h||/\s/.test(h)||h.length>35){ $("#setErr").innerHTML='<div class="ferr">Host name: no spaces, 35 characters at most.</div>'; return; }
+    if(!(idle>=1&&idle<=480)){ $("#setErr").innerHTML='<div class="ferr">Idle timeout must be 1 to 480 minutes.</div>'; return; }
+    if(h!==S.host){ S.host=h; log(`Hostname changed to ${h}`); }
+    S.ntp.sync=ntpOn?"enable":"disable"; S.ntp.type=srv==="pool.ntp.org"?"custom":"fortiguard"; S.ntp.servers=srv==="pool.ntp.org"?["pool.ntp.org"]:[];
+    const r=syncNtp();
+    if(tz!==S.tz){ S.tz=tz; log(`Time zone changed to ${tz}`); }
+    if(idle!==S.timeout){ S.timeout=idle; log(`Idle timeout changed to ${idle} minutes`); }
+    tprint("[GUI] System settings applied.","dim"); toast(r.warn||"Settings saved", r.warn?"err":"ok"); renderAll(); return; }
+  if(!M) return; const fail=r=>{M.err=r.err;M.hint=r.hint;renderGUI();};
+  if(f==="savePw"){ const a=$("#p1").value, b2=$("#p2").value; if(!a) return fail({err:"Enter a new password."}); if(a!==b2) return fail({err:"The passwords don't match."});
+    S.pw=a; log("Administrator admin password changed"); S.modal=null; toast(pwOk()?"Password changed · strong":"Password changed · weak", pwOk()?"ok":"err"); renderAll(); return; }
+  if(f==="doBk"){ const bk=takeBackup($("#bTo").value==="USB Disk"?"USB":"Local PC"); S.modal=null; toast(`Saved ${bk.name}`,"ok"); tprint(`[GUI] Backup saved: ${bk.name}`,"dim"); renderAll(); return; }
+});
+
+/* ---------- CLI ---------- */
+const T={stack:[],hist:[],hi:0,busy:false};
+const tout=$("#tout"), tin=$("#tin");
+function tprint(t,c){ const d=document.createElement("div"); if(c) d.className=c; d.textContent=t; tout.appendChild(d); tout.scrollTop=tout.scrollHeight; }
+const topF=()=>T.stack[T.stack.length-1]||{type:"top"};
+function promptText(){ const f=topF(); const l=f.label||(f.type==="entry"?String(f.key):""); return `${S.host} ${l?`(${l}) `:""}# `; }
+function updatePrompt(){ $("#tprompt").textContent=promptText(); }
+function fail(code,hint){ LASTE={ok:false,why:`CLI: command failed${hint?": "+hint:""}${T.lastCmd?` (typed "${T.lastCmd}")`:""}`}; tprint(`Command fail. Return code ${code}`,"err"); if(hint) tprint(hint,"hint"); }
+function errH(e,h){ LASTE={ok:false,why:`CLI: ${e}${T.lastCmd?` (typed "${T.lastCmd}")`:""}`}; tprint(e,"err"); if(h) tprint(h,"hint"); }
+function tokenize(l){ const o=[]; const re=/"([^"]*)"|'([^']*)'|(\S+)/g; let m; while((m=re.exec(l))) o.push(m[1]??m[2]??m[3]); return o; }
+function helpFor(f){
+  const H={top:["config system global","config system ntp","config system admin","execute time","execute backup config flash <comment>","execute revision list config","diagnose sys ntp status","get system status","lab test log | idle | lockout | restore   (lab-only)"],
+    global:["set hostname <name>","set timezone Asia/Manila","set admintimeout <minutes>","set admin-lockout-threshold <tries>","set admin-lockout-duration <seconds>","show","end"],
+    ntp:["set ntpsync enable | disable","set type fortiguard | custom","config ntpserver   (for custom servers)","show","end"],
+    ntpserver:["edit <id>","end"], ntpentry:["set server <name or ip>","next · end"],
+    admin:["edit admin","end"], adminentry:["set password <new password>","next · end · abort"]};
+  tprint((H[f.kind||"top"]||[]).join("\n"),"dim");
+}
+function showGlobal(o){ tprint(`config system global\n    set hostname "${o.host}"\n    set timezone "${o.tz}"\n    set admintimeout ${o.timeout}\n    set admin-lockout-threshold ${o.thr}\n    set admin-lockout-duration ${o.dur}\nend`); }
+function showNtp(o){ tprint(`config system ntp\n    set ntpsync ${o.sync}\n    set type ${o.type}${o.type==="custom"?`\n    config ntpserver\n${o.servers.map((s,i)=>`        edit ${i+1}\n            set server "${s}"\n        next`).join("\n")}\n    end`:""}\nend`); }
+function exec(line){
+  const toks=tokenize(line), f=topF();
+  if(line.trim().endsWith("?")){ helpFor(f); return; }
+  const [cmd,...args]=toks, path=args.join(" ");
+  switch(cmd){
+  case "help": helpFor(f); return;
+  case "clear": case "cls": tout.innerHTML=""; return;
+  case "config":{
+    if(f.kind==="ntp" && path==="ntpserver"){ T.stack.push({type:"table",kind:"ntpserver",label:"ntpserver"}); return; }
+    if(f.type!=="top") return fail(-61,"You're inside another block. Type end to go back up first.");
+    if(path==="system global"){ T.stack.push({type:"single",kind:"global",label:"global",obj:{host:S.host,tz:S.tz,timeout:S.timeout,thr:S.thr,dur:S.dur}}); return; }
+    if(path==="system ntp"){ T.stack.push({type:"single",kind:"ntp",label:"ntp",obj:{sync:S.ntp.sync,type:S.ntp.type,servers:[...S.ntp.servers]}}); return; }
+    if(path==="system admin"){ T.stack.push({type:"table",kind:"admin",label:"admin"}); return; }
+    if(path==="system settings") return fail(-61,"hostname, timezone and admin timeouts live in config system global.");
+    return fail(-61,"Try: config system global · config system ntp · config system admin");
+  }
+  case "edit":{
+    if(f.kind==="admin"){ if(args[0]!=="admin") return errH("In this lab only the admin account exists.","edit admin"); T.stack.push({type:"entry",kind:"adminentry",key:"admin",obj:{pw:null}}); return; }
+    if(f.kind==="ntpserver"){ const id=Number(args[0]); if(!Number.isInteger(id)||id<1) return errH(`value parse error before '${args[0]||""}'`,"edit 1"); T.stack.push({type:"entry",kind:"ntpentry",key:id,obj:{server:""},parent:T.stack[T.stack.length-2]}); return; }
+    return fail(-61,"edit works inside config system admin or config ntpserver.");
+  }
+  case "set": case "unset":{
+    const k=args[0], v=args.slice(1).join(" ");
+    if(!f.kind||f.type==="table") return fail(-61,"set only works inside a config block or after edit.");
+    if(cmd==="unset") return;
+    if(!k) return errH("command parse error before 'set'"); if(!v) return errH(`value parse error before '${k}'`,`Give ${k} a value.`);
+    const o=f.obj;
+    if(f.kind==="global"){
+      if(k==="hostname"){ if(/\s/.test(v)||v.length>35) return errH(`value parse error before '${v}'`,"No spaces, 35 characters at most. Example: FGT-HQ"); o.host=v; return; }
+      if(k==="timezone"){ if(!(v in TZ)){ const n=Object.keys(TZ).find(z=>z.toLowerCase()===v.toLowerCase()); return errH(`value parse error before '${v}'`, n?`Names are case-sensitive. Did you mean ${n}?`:"For the Philippines: set timezone Asia/Manila (older FortiOS versions use a number here)."); } o.tz=v; return; }
+      if(k==="admintimeout"){ const n=+v; if(!(n>=1&&n<=480)) return errH(`value out of range`,"1 to 480 minutes."); o.timeout=n; return; }
+      if(k==="admin-lockout-threshold"){ const n=+v; if(!(n>=1&&n<=10)) return errH("value out of range","1 to 10 tries."); o.thr=n; return; }
+      if(k==="admin-lockout-duration"){ const n=+v; if(!(n>=1&&n<=2147483647)) return errH("value out of range","Seconds, e.g. 300."); o.dur=n; return; }
+      if(k==="admin-sport"||k==="admin-https-redirect"||k==="gui-theme"){ return; }
+      return errH(`command parse error before '${k}'`,"In this lab: hostname, timezone, admintimeout, admin-lockout-threshold, admin-lockout-duration");
+    }
+    if(f.kind==="ntp"){
+      if(k==="ntpsync"){ if(!["enable","disable"].includes(v)) return errH(`value parse error before '${v}'`); o.sync=v; return; }
+      if(k==="type"){ if(!["fortiguard","custom"].includes(v)) return errH(`value parse error before '${v}'`,"Use fortiguard or custom."); o.type=v; return; }
+      if(k==="sync-interval"||k==="server-mode"){ return; }
+      return errH(`command parse error before '${k}'`,"Fields: ntpsync, type");
+    }
+    if(f.kind==="ntpentry"){ if(k!=="server") return errH(`command parse error before '${k}'`,"set server pool.ntp.org"); o.server=v; return; }
+    if(f.kind==="adminentry"){ if(k==="password"){ o.pw=v; if(!pwOk(v)) tprint("Weak password. Use 12+ characters with upper and lower case, a number and a symbol.","hint"); return; } if(k==="accprofile") return errH("Leave admin as super_admin in this lab."); return errH(`command parse error before '${k}'`,"set password <new password>"); }
+    return;
+  }
+  case "next": case "end":{
+    if(f.type==="top") return fail(-61,cmd==="end"?"You're already at the top.":"next closes an edit.");
+    if(f.kind==="ntpentry"){ const par=T.stack.find(x=>x.kind==="ntp"); if(f.obj.server){ par.obj.servers[f.key-1]=f.obj.server; par.obj.servers=par.obj.servers.filter(Boolean);} T.stack.pop(); if(cmd==="end") T.stack.pop(); return; }
+    if(f.kind==="adminentry"){ if(f.obj.pw!==null){ S.pw=f.obj.pw; log("Administrator admin password changed"); } T.stack.pop(); if(cmd==="end") T.stack.pop(); return; }
+    if(cmd==="next") return fail(-61,"next closes an edit. Use end here.");
+    if(f.type==="table"){ T.stack.pop(); return; }
+    T.stack.pop();
+    if(f.kind==="global"){ const o=f.obj;
+      if(o.host!==S.host){ S.host=o.host; log(`Hostname changed to ${o.host}`); }
+      if(o.tz!==S.tz){ S.tz=o.tz; log(`Time zone changed to ${o.tz}`); }
+      if(o.timeout!==S.timeout){ S.timeout=o.timeout; log(`Idle timeout changed to ${o.timeout} minutes`); }
+      if(o.thr!==S.thr||o.dur!==S.dur){ S.thr=o.thr; S.dur=o.dur; log(`Admin lockout set to ${o.thr} tries, ${o.dur} seconds`); }
+      return; }
+    if(f.kind==="ntp"){ S.ntp={sync:f.obj.sync,type:f.obj.type,servers:f.obj.servers}; const r=syncNtp(); if(r.warn){ tprint(r.warn,"err"); tprint(r.hint,"hint"); } else tprint(r.msg,"ok"); return; }
+    return;
+  }
+  case "abort": if(f.type==="top") return fail(-61,"Nothing to cancel."); T.stack.pop(); return;
+  case "show": case "get":{
+    if(f.kind==="global"){ showGlobal(f.obj); return; }
+    if(f.kind==="ntp"){ showNtp(f.obj); return; }
+    if(path==="system status"){ tprint(`Version: FortiGate-VM64 v7.4 (lab simulator)\nHostname: ${S.host}\nSystem time: ${fmt(peekNow())}\nTime zone: ${S.tz}\nNTP: ${S.synced?"synchronized":"not synchronized"}`); return; }
+    if(path==="system global"){ showGlobal({host:S.host,tz:S.tz,timeout:S.timeout,thr:S.thr,dur:S.dur}); return; }
+    if(path==="system ntp"){ showNtp(S.ntp); return; }
+    if(path==="system admin"){ tprint(`config system admin\n    edit "admin"\n        set accprofile "super_admin"\n        set password ${S.pw?"ENC ********":"(blank)"}\n    next\nend`); return; }
+    tprint(`Hostname: ${S.host}\nSystem time: ${fmt(peekNow())}`); return;
+  }
+  case "execute":{
+    if(path==="time"){ tprint(`current time is: ${fmt(peekNow()).slice(11)}\nlast ntp sync: ${S.synced?"just now":"never"}\ndate: ${fmt(peekNow()).slice(0,10)}  (${S.tz})`, timeOk()?"ok":""); if(!S.synced) tprint("2021? The factory clock was never set.","hint"); else if(!timeOk()) tprint(`Synced, but shown in ${S.tz}. Set the timezone next.`,"hint"); return; }
+    if(args[0]==="backup"&&args[1]==="config"){ const where=args[2]; if(!["flash","tftp","usb","ftp"].includes(where||"")) return errH("Usage: execute backup config flash <comment>","Or: execute backup config tftp <file> <server-ip>");
+      const b=takeBackup(where==="flash"?"flash":where.toUpperCase()); tprint(`Please wait...\nConfig backed up to ${where}: ${b.name}\nDone.`,"ok"); return; }
+    if(path==="revision list config"){ if(!S.backups.length){ tprint("No revisions.","dim"); return; } tprint(`Id  TIME                 COMMENT / FILE\n${S.backups.map((b,i)=>`${String(S.backups.length-i).padEnd(3)} ${b.time}  ${b.name} (${b.where})`).join("\n")}`); return; }
+    if(args[0]==="factoryreset") return errH("Factory reset is disabled in the lab.","Tip: this is exactly why you take backups.");
+    return fail(-61,"Try: execute time · execute backup config flash <comment> · execute revision list config");
+  }
+  case "diagnose":{ if(path==="sys ntp status"){ tprint(S.ntp.sync!=="enable"?"NTP synchronization is disabled.":`synchronized: ${S.synced?"yes":"no"}, ntpsync: enabled, server-mode: disabled\n\nserver: ${S.ntp.type==="fortiguard"?"ntp1.fortiguard.com":S.ntp.servers[0]||"(none)"}\n    reachable: yes  stratum: 2`, S.synced?"ok":"err"); return; } return fail(-61,"Try: diagnose sys ntp status"); }
+  case "lab":{ if(args[0]!=="test"||!["log","idle","lockout","restore"].includes(args[1])) return errH("Usage: lab test log | idle | lockout | restore","A lab-only command that proves each setting."); if(f.type!=="top") return fail(-61,"Type end until you're back at the top."); runTest(args[1]); markProved(args[1]); return; }
+  default: tprint("Unknown action 0","err"); tprint("Command fail. Return code -61","err"); tprint(`"${cmd}" isn't a command here. Type ? to see what you can type.`,"hint");
+  }
+}
+function submit(line){ const shown=/set password /.test(line)?line.replace(/(set password\s+)(.+)/,"$1********"):line; tprint(promptText()+shown,"in"); if(line.trim()){ T.hist.push(shown); T.hi=T.hist.length; T.lastCmd=shown.trim(); exec(line); } renderAll(); }
+tin.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){ e.preventDefault(); if(T.busy) return; const v=tin.value; tin.value=""; submit(v); }
+  else if(e.key==="ArrowUp"){ e.preventDefault(); if(T.hi>0){ T.hi--; tin.value=T.hist[T.hi]; } }
+  else if(e.key==="ArrowDown"){ e.preventDefault(); if(T.hi<T.hist.length-1){ T.hi++; tin.value=T.hist[T.hi]; } else { T.hi=T.hist.length; tin.value=""; } }
+  else if(e.key==="Tab"){ e.preventDefault(); complete(); }
+  else if(e.key==="?"){ e.preventDefault(); tprint(promptText()+tin.value+"?","in"); helpFor(topF()); }
+});
+const VOCAB=["config","system","global","ntp","admin","ntpserver","set","hostname","timezone","Asia/Manila","admintimeout","admin-lockout-threshold","admin-lockout-duration","ntpsync","enable","disable","type","fortiguard","custom","server","pool.ntp.org","password","edit","next","end","abort","show","get","status","execute","time","backup","flash","revision","list","diagnose","sys","lab","test","log","idle","lockout","restore","help"];
+function complete(){ const v=tin.value, part=(v.match(/(\S*)$/)||["",""])[1]; if(!part) return; const hits=[...new Set(VOCAB.filter(w=>w.startsWith(part)))];
+  if(hits.length===1) tin.value=v.slice(0,v.length-part.length)+hits[0]+" ";
+  else if(hits.length>1){ tprint(promptText()+v,"in"); tprint(hits.join("   "),"dim"); let p=hits[0]; for(const h of hits) while(!h.startsWith(p)) p=p.slice(0,-1); tin.value=v.slice(0,v.length-part.length)+p; } }
+$("#termbox").addEventListener("click",()=>{ if(!window.getSelection().toString()) tin.focus(); });
+$("#clearBtn").addEventListener("click",()=>{ tout.innerHTML=""; tin.focus(); });
+function runScript(lines){
+  if(T.busy) return; if(T.stack.length){ tprint("Closing your open blocks first...","dim"); T.stack=[]; updatePrompt(); }
+  T.busy=true; let i=0; $("#termbox").scrollIntoView({block:"nearest",behavior:"smooth"});
+  const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const tick_=()=>{ if(i>=lines.length){ T.busy=false; tin.focus(); return; } submit(lines[i++]); setTimeout(tick_,reduce?20:170); }; tick_();
+}
+let arm=null;
+$("#resetBtn").addEventListener("click",()=>{ const b=$("#resetBtn");
+  if(!arm){ b.textContent="Click again to reset"; b.classList.add("danger"); arm=setTimeout(()=>{arm=null;b.textContent="Reset lab";b.classList.remove("danger");},3000); return; }
+  clearTimeout(arm); arm=null; b.textContent="Reset lab"; b.classList.remove("danger"); S=fresh(); tick=0; proved.clear(); for(const k in PV) delete PV[k]; T.stack=[]; T.hist=[]; T.hi=0; T.busy=false; tout.innerHTML=""; log("System started with factory settings"); banner(); renderAll(); });
+function banner(){ tprint(`FortiGate-VM64 console · lab simulator (FortiOS 7.4 style)\nA brand-new unit, factory settings. Logged in as admin (no password yet).\nType ? any time to see what you can type. Use "lab test log" to prove each setting.\n`,"dim"); }
+window.__LAB={ get S(){ return Object.assign({},S,{last:LASTE,pv:Object.assign({},PV)}); }, stepDone, curStep, count:()=>STEPS.length,
+  checks:{hostOk,pwOk,pwStrength,timeOk,adminOk,goodBackup,evaluate},
+  restore(st){ if(!st) return; const pv=st.pv||{}; S=Object.assign(fresh(),st); S.modal=null; S.toast=null; S.umenu=false; for(const k in PV) delete PV[k]; Object.assign(PV,pv); T.stack=[]; tprint("[lab] Your progress was restored.","dim"); renderAll(); },
+  snapshot(){ const o=JSON.parse(JSON.stringify(S)); delete o.modal; delete o.toast; o.events=(o.events||[]).slice(0,30); o.pv=Object.assign({},PV); return o; },
+  readonly(on){ document.querySelectorAll(".view,.main").forEach(el=>el.classList.toggle("asx-ro",on)); } };
+log("System started with factory settings");
+banner(); renderAll();
+})();
+</script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const L=window.__LAB;
+const META=window.__LABMETA||{};
+const CFG=Object.assign({formUrl:"",minutes:30,pin:"",trainer:"",domain:""},window.__LAB_CFG||{});
+const KEY=META.key;
+const STEP=["Rename the firewall","Turn on NTP","Set the timezone","Strong admin password","Idle timeout","Admin lockout","Backup after the settings","Prove the log time","Prove idle and lockout","Prove the restore"];
+const COACH=[
+ "A firewall called FortiGate tells you nothing when you have six of them. config system global › set hostname FGT-HQ › end, or System › Settings › Host name.",
+ "Every log gets the clock's time. config system ntp › set ntpsync enable › set type fortiguard › end. Show execute time before and after.",
+ "NTP fixes the clock, not the zone. config system global › set timezone Asia/Manila › end. A synced clock in the wrong zone still gives wrong log times.",
+ "A blank or weak admin password means nobody has to guess. 12+ characters with upper and lower case, a number and a symbol.",
+ "The idle timeout closes a GUI session someone left open. config system global › set admintimeout 10 › end, or System › Settings › Idle timeout.",
+ "Lockout slows down password guessing. It is CLI-only: set admin-lockout-threshold 3 and set admin-lockout-duration 300 under config system global.",
+ "A backup only brings back what was in it when you took it. Take it after the name, time and admin settings are done, and again after every working change.",
+ "Check a log's time proves both NTP and the timezone. If it shows 2021, the clock was never synced; if it shows the wrong hour, the timezone is wrong.",
+ "Walk away proves the idle timeout; Someone guesses proves the password plus the lockout. Both must be green.",
+ "The box dies right now checks the newest backup. It must contain the name, the time settings and the admin security."];
+
+/* ---------- scoring & diagnosis ---------- */
+function progress(){
+  const n=L.count(), done=[];
+  for(let i=0;i<n;i++) if(L.stepDone(i)) done.push(i);
+  const cur=L.curStep();
+  return {done, score:done.length*10, cur:cur<0?null:cur, findings:diagnose(done)};
+}
+function diagnose(done){
+  const S=L.S, C=L.checks, PV=S.pv||{}, out=[], add=(i,problem)=>out.push({step:i+1,title:STEP[i],problem,coach:COACH[i]});
+  if(!done.includes(0)) add(0,S.host==="FortiGate-VM64"?"The hostname was never changed (still FortiGate-VM64).":`The hostname is "${S.host}", not FGT-HQ.`);
+  if(!done.includes(1)) add(1,S.ntp&&S.ntp.sync==="enable"?(S.ntp.type==="custom"&&!(S.ntp.servers||[]).length?"Turned NTP on as custom but never gave it a server.":"Turned NTP on but the clock never synced."):"NTP sync was never turned on, so the clock still says 2021.");
+  if(!done.includes(2)) add(2,`The timezone is still ${S.tz}, not Asia/Manila.`);
+  if(!done.includes(3)){ const p=S.pw||""; const miss=[]; if(p.length<12) miss.push("12+ characters"); if(!(/[a-z]/.test(p)&&/[A-Z]/.test(p))) miss.push("upper and lower case"); if(!/\d/.test(p)) miss.push("a number"); if(!/[^A-Za-z0-9]/.test(p)) miss.push("a symbol");
+    add(3,!p?"The admin password is still blank.":`The admin password is weak. It's missing: ${miss.join(", ")}.`); }
+  if(!done.includes(4)) add(4,S.timeout===5?"The idle timeout was never changed (still the default 5 minutes, not 10).":`The idle timeout is ${S.timeout} minutes, not 10.`);
+  if(!done.includes(5)){ const m=[]; if(!(S.thr>=1&&S.thr<=3)) m.push(`the threshold is ${S.thr} tries (needs 3 or fewer)`); if(!(S.dur>=300)) m.push(`the duration is ${S.dur} seconds (needs 300)`); add(5,"Lockout isn't right: "+m.join(" and ")+"."); }
+  if(!done.includes(6)){ const b=(S.backups||[])[0];
+    if(!b) add(6,"No backup was taken.");
+    else { const s=b.snap, miss=[]; if(!C.hostOk(s.host)) miss.push("the name"); if(!(s.synced&&s.tz==="Asia/Manila")) miss.push("the time settings"); if(!C.adminOk(s)) miss.push("the admin security");
+      add(6,`Took ${S.backups.length} backup${S.backups.length>1?"s":""}, but too early: the newest one doesn't have ${miss.join(", ")}.`); } }
+  if(!done.includes(7)) add(7,!S.synced?"Couldn't pass yet: the clock was never synced.":S.tz!=="Asia/Manila"?"Couldn't pass yet: the timezone isn't Asia/Manila.":"Time is right, but Check a log's time was never pressed (or lab test log never run).");
+  if(!done.includes(8)){ const m=[]; if(!PV.idle) m.push(S.timeout<=15?"Walk away was never run":"Walk away fails (idle timeout over 15)"); if(!PV.lockout) m.push(!C.pwOk(S.pw)?"Someone guesses fails (weak password)":!(S.thr<=5&&S.dur>=300)?"Someone guesses fails (lockout too weak)":"Someone guesses was never run"); add(8,m.join("; ")+"."); }
+  if(!done.includes(9)) add(9,!C.goodBackup()?"Couldn't pass yet: there's no backup with all the settings in it.":"A good backup exists, but The box dies right now was never pressed (or lab test restore never run).");
+  return out;
+}
+function mins(ms){ return Math.max(0,ms)/60000; }
+function fmtClock(ms){ ms=Math.max(0,ms); const t=Math.ceil(ms/1000); return `${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`; }
+function when(ts){ if(!ts) return "—"; const d=new Date(ts); return d.toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}); }
+
+const GUIDE=[
+ {gui:"System › Settings › Host name: FGT-HQ › Apply",
+  cli:[["config system global","Opens the global settings block."],["set hostname FGT-HQ","Gives the firewall its name."],["end","Saves the change and leaves the block."]],
+  why:"The hostname tells you which firewall you are on. With six boxes all called FortiGate, you can't tell which one is down. It also shows in the prompt, the logs and the backup file name."},
+ {gui:"System › Settings › Set Time: NTP › Use FortiGuard servers › Apply",
+  cli:[["config system ntp","Opens the time-server settings."],["set ntpsync enable","Turns on automatic time sync."],["set type fortiguard","Uses Fortinet's own time servers."],["end","Saves and syncs the clock."]],
+  why:"Every log gets the clock's time. With NTP the clock stays right by itself, so your logs line up with every other system when you investigate an incident."},
+ {gui:"System › Settings › Time Zone: Asia/Manila › Apply",
+  cli:[["config system global","Opens the global settings block."],["set timezone Asia/Manila","Sets Philippine time (UTC+8)."],["end","Saves the change."]],
+  why:"NTP gives the right time, but in the wrong zone the logs still show the wrong hour. The timezone makes the logs read in local Manila time."},
+ {gui:"System › Administrators › admin › Change Password (12+ characters, upper, lower, number, symbol)",
+  cli:[["config system admin","Opens the administrator accounts."],["edit admin","Picks the admin account."],["set password Uas#Firewall26","Sets a strong password (use your own in real life)."],["next","Saves this account."],["end","Leaves the block."]],
+  why:"A brand-new FortiGate has a blank admin password. Anyone who reaches the login page could walk in. A strong password is the first lock on the door."},
+ {gui:"System › Settings › Idle timeout: 10 minutes › Apply",
+  cli:[["config system global","Opens the global settings block."],["set admintimeout 10","Logs out an admin session after 10 idle minutes."],["end","Saves the change."]],
+  why:"If someone leaves the GUI open and walks away, the idle timeout closes the session so nobody else can use it."},
+ {gui:"No GUI field for this one. Use the console:",
+  cli:[["config system global","Opens the global settings block."],["set admin-lockout-threshold 3","Locks out after 3 wrong passwords."],["set admin-lockout-duration 300","Keeps them locked out for 300 seconds (5 minutes)."],["end","Saves the change."]],
+  why:"Lockout slows down password guessing. After 3 wrong tries the address has to wait 5 minutes, so guessing a password becomes very slow."},
+ {gui:"admin ▾ (top right) › Configuration › Backup › Local PC › OK",
+  cli:[["execute backup config flash day-one-done","Saves a copy of the whole configuration, with a comment."],["execute revision list config","Lists the saved backups so you can check it's there."]],
+  why:"A backup only brings back what was in it when you took it. Taking it after the name, time and admin settings means one restore brings all of them back."},
+ {gui:"Prove it › Check a log's time",
+  cli:[["lab test log","Lab-only command: checks the newest log's time."]],
+  why:"This proves NTP and the timezone together: the log should show today in Manila time, not 2021 or the wrong hour."},
+ {gui:"Prove it › Walk away for 15 min, then Someone guesses 5 times",
+  cli:[["lab test idle","Lab-only command: checks the idle timeout."],["lab test lockout","Lab-only command: checks the password and the lockout."]],
+  why:"These prove the admin account is safe: an open session closes by itself, and guessing gets locked out."},
+ {gui:"Prove it › The box dies right now",
+  cli:[["lab test restore","Lab-only command: checks what the newest backup could bring back."]],
+  why:"This proves the backup has the name, time and admin settings in it. If the box died now, you could restore everything in seconds."}];
+
+const A={att:null,hints:new Set(),doneAt:{},fails:[],lastSig:"",timerT:null,confirm:false};
+const store={ get(){ try{ return JSON.parse(localStorage.getItem(KEY)||"null"); }catch(_){ return null; } }, set(v){ try{ localStorage.setItem(KEY,JSON.stringify(v)); }catch(_){ } }, clear(){ try{ localStorage.removeItem(KEY); }catch(_){ } } };
+
+/* ---------- result code ---------- */
+function crc(str){ let h=2166136261>>>0; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h.toString(16).padStart(8,"0").slice(0,6); }
+function b64u(str){ return btoa(unescape(encodeURIComponent(str))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+const KX=META.kx;
+function fnv8(str){ let h=2166136261>>>0; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h.toString(16).padStart(8,"0"); }
+function ks(seed,n){ let x=parseInt(fnv8(seed),16)||1, out=new Uint8Array(n); for(let i=0;i<n;i++){ x^=x<<13; x>>>=0; x^=x>>>17; x^=x<<5; x>>>=0; out[i]=x&255; } return out; }
+function makeCode(a){
+  const o={v:1,lab:META.id,n:a.name,em:a.email,d:a.dept,s:a.score,st:a.status,dn:a.done,da:a.doneAt,u:Math.round((a.usedMin||0)*10)/10,m:a.minutes,h:a.hints,t0:a.startedAt,t1:a.finishedAt,
+    f:(a.findings||[]).map(x=>[x.step,String(x.problem).slice(0,160)]),e:(a.fails||[]).slice(-4).map(x=>[x.min,String(x.why).slice(0,140)])};
+  const j=JSON.stringify(o), nonce=(a.startedAt||Date.now()).toString(36).slice(-6).padStart(6,"0");
+  const b=new TextEncoder().encode(j), k=ks(KX+nonce,b.length); let bin=""; for(let i=0;i<b.length;i++) bin+=String.fromCharCode(b[i]^k[i]);
+  const body=btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  return `${META.prefix}-${nonce}${body}-${fnv8(KX+nonce+j)}`;
+}
+function statusText(a){ return (a.done||[]).length>=10?"Completed":a.status==="timeout"?"Incomplete (time ran out)":"Incomplete (submitted early)"; }
+function stuckText(a){ const f=(a.findings||[])[0]; return f?`Task ${f.step}. ${f.title}: ${f.problem}`:"Completed all 10 tasks"; }
+function formLink(a){
+  if(!CFG.formUrl) return "";
+  const vals={LAB_X:META.title,NAME_X:a.name,EMAIL_X:a.email||"",DEPT_X:a.dept,SCORE_X:String(a.score),STATUS_X:statusText(a),STUCK_X:stuckText(a).slice(0,380),CODE_X:makeCode(a)};
+  let u=CFG.formUrl;
+  for(const [k,v] of Object.entries(vals)){ const enc=encodeURIComponent(v); u=u.split(k).join(enc); }
+  return u;
+}
+
+/* ---------- UI ---------- */
+const ov=document.createElement("div"); ov.className="asx-ov"; ov.hidden=true; document.body.appendChild(ov);
+const bar=document.createElement("div"); bar.className="asx-bar"; bar.hidden=true; document.querySelector(".wrap").prepend(bar);
+function show(html){ ov.innerHTML=html; ov.hidden=false; document.body.classList.add("asx-lock"); }
+function hide(){ ov.hidden=true; ov.innerHTML=""; document.body.classList.remove("asx-lock"); }
+
+
+function renderRegister(msg){
+  const m=CFG.minutes;
+  show(`<form class="asx-card" id="asxReg" novalidate><h2>${esc(META.title)} Assessment</h2>
+    <p>${META.intro} You have <b>${m} minutes</b>.</p>
+    <ol class="asx-rules"><li>Register your name, email and department, then press Start. The timer starts at once.</li><li>${META.rule2}</li><li>Press Submit when you're done. When time runs out, it submits by itself.</li><li>At the end, press <b>Send my result</b> and then <b>Submit</b> on the Microsoft Form that opens.</li></ol>
+    <label for="asxName">Full name</label><input id="asxName" required maxlength="80" autocomplete="name" placeholder="e.g. Juan Dela Cruz">
+    <label for="asxEmail">Email address</label><input id="asxEmail" type="email" required maxlength="120" autocomplete="email" placeholder="${CFG.domain?"e.g. juan.delacruz@"+esc(CFG.domain):"e.g. juan.delacruz@company.com"}">
+    <label for="asxDept">Department</label><input id="asxDept" required maxlength="60" placeholder="e.g. IT Operations">
+    ${!CFG.formUrl?`<p class="asx-warn">This copy has no Microsoft Form set up. You'll get a result code at the end to send to your trainer.</p>`:""}
+    ${msg?`<p class="asx-err">${esc(msg)}</p>`:""}
+    <button class="btn gold" type="submit">Start the ${m}-minute activity</button></form>`);
+  setTimeout(()=>{ const n=$("#asxName"); if(n) n.focus(); },30);
+}
+function renderResult(){
+  const a=A.att||{}, f=a.findings||[], link=formLink(a), code=makeCode(a);
+  show(`<div class="asx-card wide"><h2>${(a.done||[]).length>=10?"Completed":a.status==="timeout"?"Time's up":"Submitted"}</h2>
+    <div class="asx-score"><b>${a.score??0}</b><span>/ 100</span></div>
+    <p>${esc(a.name)} · ${esc(a.email||"")} · ${esc(a.dept)} · ${(a.done||[]).length} of 10 tasks · ${Math.round(a.usedMin||0)} of ${a.minutes} min</p>
+    <div class="asx-send"><b>Last step: send your result to your trainer</b>
+      ${link?`<p>Press the button. A Microsoft Form opens with your answers already filled in. Check it, then press <b>Submit</b> on the form.</p><a class="btn gold" id="asxSend" href="${esc(link)}" target="_blank" rel="noopener">Send my result (opens Microsoft Forms)</a>`
+        :`<p>Copy the result code below and send it to your trainer${CFG.trainer?` (${esc(CFG.trainer)})`:""}.</p>`}
+      <details ${link?"":"open"}><summary>Form didn't open, or answers are empty? Use the result code</summary><p class="asx-muted">Copy this code and paste it into the form's "Result code" question${CFG.trainer?`, or send it to ${esc(CFG.trainer)}`:""}.</p><textarea id="asxCode" readonly rows="4">${esc(code)}</textarea><button class="btn sm" type="button" id="asxCopy">Copy the code</button></details>
+      <p class="asx-muted" id="asxSent">${a.sentAt?"You opened the form on "+new Date(a.sentAt).toLocaleString()+". Remember to press Submit there.":""}</p></div>
+    ${f.length?`<h3>Where you stopped</h3><ul class="asx-find">${f.map(x=>`<li><b>Task ${x.step}. ${esc(x.title)}</b><span>${esc(x.problem)}</span></li>`).join("")}</ul>`:`<p class="asx-ok">${META.doneMsg}</p>`}
+    <div class="asx-row"><button class="btn" type="button" id="asxView">Look at my lab (read-only)</button><button class="btn" type="button" id="asxReset">Trainer: reset this computer</button></div>
+    <div id="asxPin"></div></div>`);
+  const s=$("#asxSend"); if(s) s.onclick=()=>{ a.sentAt=Date.now(); save(); setTimeout(()=>{ const t=$("#asxSent"); if(t) t.textContent="The form opened in a new tab. Remember to press Submit there."; },50); };
+  $("#asxCopy").onclick=()=>{ const t=$("#asxCode"); const b=$("#asxCopy"); try{ navigator.clipboard.writeText(code).then(()=>b.textContent="Copied").catch(()=>{ t.select(); b.textContent="Selected: press Ctrl+C"; }); }catch(_){ t.select(); b.textContent="Selected: press Ctrl+C"; } };
+  $("#asxView").onclick=()=>{ hide(); bar.hidden=false; bar.innerHTML=`<span><b>${esc(a.name)}</b> · ${esc(statusText(a))} · score ${a.score}/100</span><span class="sp"></span><button class="btn sm gold" type="button" id="asxBack">Back to my result</button>`; $("#asxBack").onclick=()=>{ bar.hidden=true; if(L.readonly) L.readonly(false); else { const m=document.querySelector(".main"); if(m) m.classList.remove("asx-ro"); } renderResult(); }; if(L.readonly) L.readonly(true); else { const m=document.querySelector(".main"); if(m) m.classList.add("asx-ro"); } };
+  $("#asxReset").onclick=()=>{ $("#asxPin").innerHTML=`<form id="asxPinF" class="asx-row"><input id="asxPinIn" type="password" placeholder="Trainer PIN" aria-label="Trainer PIN" style="max-width:160px"><button class="btn sm danger" type="submit">Reset for a new student</button></form>`; $("#asxPinIn").focus(); };
+}
+function save(){ if(A.att) store.set({att:A.att,lab:L.snapshot()}); }
+
+/* ---------- run ---------- */
+function startTimer(){
+  clearInterval(A.timerT);
+  const tick=()=>{ const a=A.att; if(!a||a.status!=="in_progress") return; const left=a.startedAt+a.minutes*60000-Date.now(); const p=progress();
+    bar.hidden=false;
+    bar.innerHTML=`<span class="asx-who"><b>${esc(a.name)}</b> · ${esc(a.dept)}</span><span class="asx-time ${left<5*60000?"low":""}">⏱ ${fmtClock(left)}</span><span>Score so far <b>${p.score}</b>/100 · ${p.done.length}/10 tasks</span><span class="sp"></span>${A.confirm?`<span>Submit now?</span><button class="btn sm danger" type="button" id="asxYes">Yes, submit</button><button class="btn sm" type="button" id="asxNo">Keep working</button>`:`<button class="btn sm gold" type="button" id="asxSub">Submit</button>`}`;
+    const sb=$("#asxSub"); if(sb) sb.onclick=()=>{ A.confirm=true; tick(); };
+    const y=$("#asxYes"); if(y) y.onclick=()=>finish("submitted"); const nn=$("#asxNo"); if(nn) nn.onclick=()=>{ A.confirm=false; tick(); };
+    if(left<=0) finish("timeout"); };
+  tick(); A.timerT=setInterval(tick,1000);
+}
+function record(){
+  const a=A.att; if(!a||a.status!=="in_progress") return;
+  const p=progress(), el=Date.now()-a.startedAt;
+  p.done.forEach(i=>{ if(A.doneAt[i]==null) A.doneAt[i]=Math.round(mins(el)*10)/10; if(!(a.popped||[]).includes(i)&&!POP.q.includes(i)&&POP.cur!==i) POP.q.push(i); });
+  if(POP.q.length) setTimeout(showPop,250);
+  const last=L.S.last; if(last&&!last.ok&&last.why&&!A.fails.some(f=>f.why===last.why)){ A.fails.push({why:last.why,min:Math.round(mins(el)*10)/10}); if(A.fails.length>8) A.fails.shift(); }
+  Object.assign(a,{done:p.done,score:p.score,currentStep:p.cur==null?null:p.cur+1,findings:p.findings,doneAt:{...A.doneAt},hints:[...A.hints],fails:[...A.fails]});
+  let snap=""; try{ snap=JSON.stringify(L.snapshot()); }catch(_){ }
+  const sig=JSON.stringify([p.done,[...A.hints],A.fails.length])+snap;
+  if(sig!==A.lastSig){ A.lastSig=sig; save(); }
+}
+function finish(status){
+  const a=A.att; if(!a||a.status!=="in_progress") return;
+  clearInterval(A.timerT); A.confirm=false; A.lastSig=""; record(); closePop(true);
+  const p=progress();
+  Object.assign(a,{status,finishedAt:Date.now(),usedMin:Math.min(a.minutes,mins(Date.now()-a.startedAt)),score:p.score,done:p.done,findings:p.findings,currentStep:p.cur==null?null:p.cur+1});
+  save(); bar.hidden=true; renderResult();
+}
+document.addEventListener("submit",e=>{
+  if(e.target.id==="asxReg"){ e.preventDefault(); e.stopPropagation();
+    const name=$("#asxName").value.trim(), email=$("#asxEmail").value.trim().toLowerCase(), dept=$("#asxDept").value.trim();
+    const keep=()=>{ $("#asxName").value=name; $("#asxEmail").value=email; $("#asxDept").value=dept; };
+    if(name.length<2){ renderRegister("Please type your full name."); return keep(); }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ renderRegister("Please type a valid email address, like name@company.com."); return keep(); }
+    if(CFG.domain&&!email.endsWith("@"+CFG.domain.toLowerCase().replace(/^@/,""))){ renderRegister(`Please use your @${CFG.domain.replace(/^@/,"")} email address.`); return keep(); }
+    if(!dept){ renderRegister("Please type your department."); return keep(); }
+    A.att={popped:[],name,email,dept,startedAt:Date.now(),minutes:CFG.minutes,status:"in_progress",score:0,done:[],doneAt:{},hints:[],findings:progress().findings,fails:[],currentStep:1};
+    A.doneAt={}; A.hints=new Set(); A.fails=[]; save(); hide(); startTimer(); }
+  if(e.target.id==="asxPinF"){ e.preventDefault(); e.stopPropagation();
+    const ok=!CFG.pin||$("#asxPinIn").value===CFG.pin; if(!ok){ $("#asxPin").insertAdjacentHTML("beforeend",'<p class="asx-err">Wrong PIN.</p>'); return; }
+    store.clear(); location.reload(); }
+},true);
+window.__onLabChange=()=>{ if(A.att&&A.att.status==="in_progress") record(); };
+function hookHints(){ document.querySelectorAll("details.hint").forEach((d,i)=>d.addEventListener("toggle",()=>{ if(d.open&&A.att&&A.att.status==="in_progress"){ A.hints.add(i+1); record(); } })); }
+
+if(META.hideReset){ const rb=document.getElementById("resetBtn"); if(rb) rb.hidden=true; }
+/* ---------- v3: full-guide hints (no copy), no paste in the CLI, explain pop-ups ---------- */
+const escG=t=>esc(t);
+function guideHTML(g){ return `<div class="asx-guide"><div class="asx-g-gui"><b>GUI:</b> ${escG(g.gui)}</div>${g.cli&&g.cli.length?`<div class="asx-g-cli"><b>CLI: type each line yourself</b>${g.cli.map(([c])=>`<code class="${/^\(/.test(c)?"act":""}">${escG(c)}</code>`).join("")}</div>`:""}</div>`; }
+function renderGuides(){ document.querySelectorAll("details.hint").forEach((d,i)=>{ const g=GUIDE[i]; if(!g) return; d.innerHTML=`<summary>Hint: full guide</summary>${guideHTML(g)}`; }); }
+const inGuide=n=>{ for(;n;n=n.parentNode) if(n.classList&&(n.classList.contains("asx-guide")||n.classList.contains("asx-pop"))) return true; return false; };
+["copy","cut"].forEach(t=>document.addEventListener(t,e=>{ const sel=window.getSelection(); if(sel&&(inGuide(sel.anchorNode)||inGuide(sel.focusNode))){ e.preventDefault(); } },true));
+document.addEventListener("contextmenu",e=>{ if(inGuide(e.target)) e.preventDefault(); },true);
+document.addEventListener("dragstart",e=>{ if(inGuide(e.target)) e.preventDefault(); },true);
+const TERM_SEL="#tin, .term input, .clipanel input";
+function noPaste(e){ const t=e.target; if(t&&t.matches&&t.matches(TERM_SEL)){ e.preventDefault(); tip(t,"Type the command yourself. Pasting is off in this assessment."); } }
+document.addEventListener("paste",noPaste,true); document.addEventListener("drop",noPaste,true);
+let tipT=null; function tip(el,msg){ let d=document.getElementById("asxTip"); if(!d){ d=document.createElement("div"); d.id="asxTip"; d.className="asx-tip"; document.body.appendChild(d); } d.textContent=msg; const r=el.getBoundingClientRect(); d.style.left=Math.max(8,r.left)+"px"; d.style.top=Math.max(8,r.top-38)+"px"; d.hidden=false; clearTimeout(tipT); tipT=setTimeout(()=>d.hidden=true,2200); }
+const POP={q:[],cur:null}; const pop=document.createElement("div"); pop.className="asx-pop"; pop.hidden=true; document.body.appendChild(pop);
+function showPop(){ const a=A.att; if(POP.cur!=null||!POP.q.length||!a||a.status!=="in_progress") return; const i=POP.q.shift(); if((a.popped||[]).includes(i)) return showPop(); POP.cur=i;
+  const g=GUIDE[i]||{why:"",cli:[]}, n=L.count(), left=n-(a.done||[]).length, last=left<=0;
+  pop.innerHTML=`<div class="asx-pcard" role="dialog" aria-modal="true" aria-labelledby="asxPT"><div class="asx-ptop"><span class="asx-pok">✓</span><div><small>Task ${i+1} of ${n} done</small><h3 id="asxPT">${esc(STEP[i])}</h3></div></div>
+    <p class="asx-pwhy"><b>Why it matters:</b> ${esc(g.why)}</p>
+    ${g.cli&&g.cli.length?`<div class="asx-pcmds"><b>What the commands do</b><table>${g.cli.map(([c,m])=>`<tr><td><code>${esc(c)}</code></td><td>${esc(m)}</td></tr>`).join("")}</table></div>`:""}
+    <div class="asx-row"><button class="btn gold" type="button" id="asxPNext">${last?"Got it":POP.q.length?"Got it, next explanation →":"Got it, next task →"}</button><span class="asx-muted">${last?"All tasks done. Press Submit when you're ready.":`${left} task${left>1?"s":""} left`}</span></div></div>`;
+  pop.hidden=false; const b=document.getElementById("asxPNext"); b.onclick=()=>closePop(); setTimeout(()=>b.focus(),30); }
+function closePop(silent){ const a=A.att; if(POP.cur!=null&&a){ a.popped=[...new Set([...(a.popped||[]),POP.cur])]; save(); } POP.cur=null; pop.hidden=true; pop.innerHTML="";
+  if(silent){ POP.q=[]; return; } if(POP.q.length) return showPop(); const t=[...document.querySelectorAll(TERM_SEL)].find(x=>x.offsetParent); if(t) t.focus(); }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&POP.cur!=null) closePop(); });
+renderGuides();
+(function boot(){
+  hookHints();
+  const saved=store.get();
+  if(saved&&saved.att){ A.att=saved.att; A.doneAt={...(saved.att.doneAt||{})}; A.hints=new Set(saved.att.hints||[]); A.fails=[...(saved.att.fails||[])];
+    if(saved.lab) L.restore(saved.lab);
+    if(A.att.status==="in_progress"){ if(A.att.startedAt+A.att.minutes*60000<=Date.now()) finish("timeout"); else { hide(); startTimer(); } return; }
+    renderResult(); return; }
+  renderRegister();
+})();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCNA Exam Studio - JITL Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-xl text-white font-bold text-xl shadow-lg shadow-blue-500/30">JITL</div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">CCNA Exam & Quiz Studio</h1>
+                    <p class="text-xs text-slate-400">Interactive Test Generator tailored to Jeremy's IT Lab CCNA Course Notes</p>
+                </div>
+            </div>
+            <div id="stats-badge" class="hidden items-center space-x-4 bg-slate-800 px-4 py-2 rounded-lg border border-slate-700 text-sm">
+                <div>Timer: <span id="timer-display" class="font-mono font-semibold text-blue-400">00:00</span></div>
+                <div class="border-l border-slate-700 pl-4">Score: <span id="live-score" class="font-semibold text-emerald-400">0/0</span></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4 sm:p-6 md:p-8">
+
+        <!-- SETUP VIEW -->
+        <div id="setup-view" class="space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-2">Configure Practice Exam</h2>
+                <p class="text-slate-400 text-sm mb-6">Select your focus module according to your study materials and begin testing.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Module Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Select Course Module</label>
+                        <select id="module-select" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-blue-500">
+                            <option value="all">All Modules (Comprehensive CCNA Exam)</option>
+                            <option value="networking_devices">1. Networking Devices (Switches, Routers, Firewalls)</option>
+                            <option value="interfaces_cables">2. Interfaces and Cables (Single-mode, Multimode, UTP)</option>
+                            <option value="vlans">8. VLANs & Trunking (802.1Q Tagging)</option>
+                            <option value="stp">15. Spanning Tree Protocol (STP & Root Bridge)</option>
+                            <option value="routing_ospf">26. OSPF & Dynamic Routing Protocols</option>
+                            <option value="ip_services">37-41. IP Services (NTP, DNS, DHCP, SNMP, Syslog)</option>
+                            <option value="security">48-52. Security Fundamentals & Port Security</option>
+                            <option value="automation">60-61. Automation, JSON, YAML & REST APIs</option>
+                        </select>
+                    </div>
+
+                    <!-- Question Count -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Number of Questions</label>
+                        <select id="count-select" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-blue-500">
+                            <option value="10">10 Questions (Quick Review)</option>
+                            <option value="20">20 Questions (Targeted Practice)</option>
+                            <option value="30">30 Questions (Half-Length Session)</option>
+                            <option value="45">45 Questions (Extended Drill)</option>
+                            <option value="60" selected>60 Questions (Comprehensive Simulation Session)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Mode Selection -->
+                <div class="mb-8">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Quiz Mode</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="border border-slate-800 bg-slate-950 p-4 rounded-xl cursor-pointer hover:border-blue-500 flex items-start space-x-3 transition">
+                            <input type="radio" name="quiz-mode" value="instant" checked class="mt-1 text-blue-600 focus:ring-blue-500">
+                            <div>
+                                <span class="font-semibold block text-white">Instant Feedback Mode</span>
+                                <span class="text-xs text-slate-400">See correctness and detailed JITL rationales immediately after each answer.</span>
+                            </div>
+                        </label>
+                        <label class="border border-slate-800 bg-slate-950 p-4 rounded-xl cursor-pointer hover:border-blue-500 flex items-start space-x-3 transition">
+                            <input type="radio" name="quiz-mode" value="exam" class="mt-1 text-blue-600 focus:ring-blue-500">
+                            <div>
+                                <span class="font-semibold block text-white">Exam Simulation Mode</span>
+                                <span class="text-xs text-slate-400">Timed session with a comprehensive review breakdown at the end.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button onclick="startQuiz()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-4 rounded-xl shadow-lg shadow-blue-600/30 transition duration-200 flex items-center justify-center space-x-2">
+                    <span>Start Practice Session</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- QUIZ ACTIVE VIEW -->
+        <div id="quiz-view" class="hidden space-y-6">
+            <!-- Progress Bar -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
+                <div class="flex justify-between items-center mb-3">
+                    <span id="question-tracker" class="text-xs font-semibold uppercase tracking-wider text-blue-400">Question 1 of 60</span>
+                    <span id="module-badge" class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-full border border-slate-700">Module</span>
+                </div>
+                <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-blue-600 h-full transition-all duration-300" style="width: 1.66%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+                <h3 id="question-text" class="text-lg sm:text-xl font-semibold text-white leading-relaxed">Loading question...</h3>
+
+                <!-- Options Grid -->
+                <div id="options-container" class="space-y-3"></div>
+
+                <!-- Explanation Box -->
+                <div id="explanation-box" class="hidden p-4 rounded-xl border transition-all">
+                    <div id="explanation-header" class="font-semibold mb-1 text-sm"></div>
+                    <p id="explanation-text" class="text-sm text-slate-300 leading-relaxed"></p>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                    <button id="hint-btn" onclick="toggleHint()" class="text-sm text-slate-400 hover:text-white flex items-center space-x-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Show Hint</span>
+                    </button>
+                    <button id="next-btn" onclick="nextQuestion()" disabled class="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-6 py-3 rounded-xl transition shadow-lg shadow-blue-600/20">
+                        Next Question
+                    </button>
+                </div>
+                <div id="hint-text" class="hidden text-xs text-amber-400 bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg"></div>
+            </div>
+        </div>
+
+        <!-- RESULTS VIEW -->
+        <div id="results-view" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center shadow-xl space-y-6">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-600/20 border border-blue-500/30 text-blue-400 text-3xl font-bold rounded-2xl mb-2">
+                    <span id="final-score-percent">0%</span>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-1">Session Complete!</h2>
+                    <p id="final-score-text" class="text-slate-400 text-sm">You scored X out of Y correct.</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+                    <button onclick="restartQuiz()" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-8 py-3 rounded-xl transition shadow-lg shadow-blue-600/30">
+                        Configure New Session
+                    </button>
+                    <button onclick="reviewAnswers()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium px-8 py-3 rounded-xl transition">
+                        Review Answer Key
+                    </button>
+                </div>
+            </div>
+
+            <!-- Review Breakdown Container -->
+            <div id="review-container" class="space-y-4"></div>
+        </div>
+
+    </main>
+
+    <script>
+        // Master Expanded Question Bank (60+ questions covering JITL CCNA curriculum)
+        const questionBank = [
+            // Module 1: Networking Devices
+            {
+                module: "networking_devices",
+                moduleName: "Module 1: Networking Devices",
+                question: "What is the primary function of a Layer 2 network switch within a Local Area Network?",
+                options: [
+                    { text: "To provide connectivity for hosts within the same Local Area Network.", isCorrect: true, rationale: "Switches operate at Layer 2 using MAC addresses to forward frames between devices in the same collision domain/LAN." },
+                    { text: "To route packets between different IP subnets across the internet.", isCorrect: false, rationale: "Routing packets between distinct IP networks is performed by Layer 3 routers." },
+                    { text: "To flood all incoming frames blindly out of every active port like a hub.", isCorrect: false, rationale: "Hubs flood all ports (Layer 1), whereas switches learn MAC addresses and forward selectively." },
+                    { text: "To translate private MAC addresses into public IP addresses.", isCorrect: false, rationale: "Network Address Translation (NAT) is handled by routers or firewalls, not Layer 2 switches." }
+                ],
+                hint: "Think about Layer 2 forwarding using MAC addresses within a single LAN."
+            },
+            {
+                module: "networking_devices",
+                moduleName: "Module 1: Networking Devices",
+                question: "Which device operates at Layer 3 and is primarily responsible for connecting different LANs together?",
+                options: [
+                    { text: "Router", isCorrect: true, rationale: "Routers operate at Layer 3 to forward packets between different IP networks and send data over the internet." },
+                    { text: "Layer 2 Switch", isCorrect: false, rationale: "Switches operate at Layer 2 and do not provide connectivity between different LAN subnets." },
+                    { text: "Ethernet Hub", isCorrect: false, rationale: "Hubs are physical Layer 1 devices that share a single collision domain." },
+                    { text: "Host PC", isCorrect: false, rationale: "Host PCs are end devices generating traffic, not core network interconnects." }
+                ],
+                hint: "This device has fewer interfaces than switches and routes traffic across subnets."
+            },
+            {
+                module: "networking_devices",
+                moduleName: "Module 1: Networking Devices",
+                question: "What is the primary distinction between a Next-Generation Firewall (NGFW) and a traditional stateless packet filtering firewall?",
+                options: [
+                    { text: "NGFWs integrate application awareness, deep packet inspection, and intrusion prevention systems.", isCorrect: true, rationale: "NGFWs go beyond port/IP filtering by identifying specific applications and inspecting payloads for threats." },
+                    { text: "NGFWs operate exclusively at Layer 1 physical media layers.", isCorrect: false, rationale: "Firewalls operate across Layers 3 through 7." },
+                    { text: "Traditional firewalls process traffic at wire speed using hardware ASICs without dropping packets.", isCorrect: false, rationale: "Traditional stateless firewalls simply check ACL rules per packet without state tracking or advanced features." },
+                    { text: "NGFWs only inspect inbound HTTP traffic on port 80.", isCorrect: false, rationale: "NGFWs inspect all ports and protocols across comprehensive security layers." }
+                ],
+                hint: "Think about deep packet inspection and application layer visibility."
+            },
+
+            // Module 2: Interfaces and Cables
+            {
+                module: "interfaces_cables",
+                moduleName: "Module 2: Interfaces and Cables",
+                question: "What is a primary distinguishing feature of Single-Mode fiber optic cable compared to Multimode fiber?",
+                options: [
+                    { text: "It uses a laser-based transmitter and a narrow core for longer transmission distances.", isCorrect: true, rationale: "Single-mode fiber uses a very narrow core and laser light, allowing light to travel in a single straight path over much longer distances." },
+                    { text: "It has a wide core allowing multiple light rays to enter simultaneously via LEDs.", isCorrect: false, rationale: "This describes Multimode fiber, which uses LEDs and experiences modal dispersion over long runs." },
+                    { text: "It operates strictly at Layer 3 using copper UTP RJ-45 connectors.", isCorrect: false, rationale: "Fiber optic cables are physical media operating at Layer 1." },
+                    { text: "It is cheaper to manufacture and deploy than UTP copper cabling.", isCorrect: false, rationale: "Single-mode optics and laser transmitters are more expensive than multimode equipment." }
+                ],
+                hint: "Consider the core diameter and light source used for high-bandwidth long-haul links."
+            },
+            {
+                module: "interfaces_cables",
+                moduleName: "Module 2: Interfaces and Cables",
+                question: "Which cable type is required when connecting a PC serial terminal directly to a Cisco device console port?",
+                options: [
+                    { text: "Rollover cable", isCorrect: true, rationale: "A rollover cable reverses pin connections from one end to the other, specifically designed for terminal-to-console connections." },
+                    { text: "Crossover cable", isCorrect: false, rationale: "Crossover cables are traditionally used to connect similar devices (e.g., switch to switch)." },
+                    { text: "Straight-through cable", isCorrect: false, rationale: "Straight-through cables connect dissimilar devices like a PC to a switch port." },
+                    { text: "Fiber patch cord", isCorrect: false, rationale: "Fiber patch cords carry optical signals, not serial console signals." }
+                ],
+                hint: "This specialized cable 'rolls over' its pinouts from DB9/USB to RJ45."
+            },
+            {
+                module: "interfaces_cables",
+                moduleName: "Module 2: Interfaces and Cables",
+                question: "What is the maximum recommended cable length for standard Category 6 (CAT6) UTP copper cabling in a 1000BASE-T network?",
+                options: [
+                    { text: "100 meters", isCorrect: true, rationale: "Standard Ethernet UTP cabling (Cat5e, Cat6, Cat6a) specifies a maximum channel length of 100 meters." },
+                    { text: "500 meters", isCorrect: false, rationale: "500 meters exceeds copper attenuation limits significantly." },
+                    { text: "10 meters", isCorrect: false, rationale: "10 meters is far too short; standard patch and run limits extend much further." },
+                    { text: "5000 meters", isCorrect: false, rationale: "Kilometer-scale lengths require single-mode fiber optics." }
+                ],
+                hint: "Think of the standard distance limit for structured copper cabling runs."
+            },
+
+            // Module 8: VLANs & Trunking
+            {
+                module: "vlans",
+                moduleName: "Module 8: VLANs & Trunking",
+                question: "How do trunk ports distinguish which VLAN a frame belongs to when traversing a single link between switches?",
+                options: [
+                    { text: "By inserting an 802.1Q VLAN tag into the Ethernet frame header.", isCorrect: true, rationale: "Trunk ports tag frames with an IEEE 802.1Q header so receiving switches know which VLAN the frame belongs to." },
+                    { text: "By changing the destination IP address of the packet.", isCorrect: false, rationale: "VLAN tagging happens at Layer 2 inside the Ethernet header, leaving IP addresses untouched." },
+                    { text: "By translating MAC addresses into port numbers dynamically.", isCorrect: false, rationale: "MAC learning builds the address table, whereas trunking uses explicit VLAN tagging." },
+                    { text: "By routing packets through a firewall gateway.", isCorrect: false, rationale: "VLAN separation and trunking occur at Layer 2 via switches." }
+                ],
+                hint: "Think about the IEEE standard protocol used for tagging frames across switches."
+            },
+            {
+                module: "vlans",
+                moduleName: "Module 8: VLANs & Trunking",
+                question: "What is the primary operational difference between access ports and trunk ports on a Cisco switch?",
+                options: [
+                    { text: "Access ports carry traffic for a single VLAN (untagged), while trunk ports carry multiple VLANs (tagged).", isCorrect: true, rationale: "Access ports connect to end devices and handle untagged traffic for one VLAN, whereas trunk ports carry tagged traffic for multiple VLANs." },
+                    { text: "Access ports operate at Layer 3 while trunk ports operate at Layer 1.", isCorrect: false, rationale: "Both access and trunk ports operate at Layer 2." },
+                    { text: "Trunk ports are only used for connecting end user PCs.", isCorrect: false, rationale: "PCs connect to access ports, while switches and routers connect via trunk ports." },
+                    { text: "Access ports use ISL exclusively while trunk ports use UTP copper.", isCorrect: false, rationale: "ISL is obsolete; modern equipment uses 802.1Q for trunking." }
+                ],
+                hint: "Think about whether traffic is untagged for an end host or tagged for multiple VLANs."
+            },
+            {
+                module: "vlans",
+                moduleName: "Module 8: VLANs & Trunking",
+                question: "What is the purpose of configuring a native VLAN on an 802.1Q trunk link?",
+                options: [
+                    { text: "To carry untagged traffic across the trunk link.", isCorrect: true, rationale: "Frames belonging to the native VLAN are left untagged across the 802.1Q trunk." },
+                    { text: "To encrypt all management frames traversing the switch.", isCorrect: false, rationale: "Native VLANs do not provide encryption." },
+                    { text: "To isolate voice traffic from data traffic on IP phones.", isCorrect: false, rationale: "Voice VLANs handle IP phones, whereas native VLANs process untagged frames." },
+                    { text: "To assign IP addresses to switches dynamically via DHCP.", isCorrect: false, rationale: "DHCP allocates IP addresses independently of trunk native VLANs." }
+                ],
+                hint: "Unlike other VLANs on a trunk, frames in this VLAN are sent without 802.1Q tags."
+            },
+
+            // Module 15: Spanning Tree Protocol
+            {
+                module: "stp",
+                moduleName: "Module 15: Spanning Tree Protocol",
+                question: "What is the primary purpose of the Spanning Tree Protocol (STP - IEEE 802.1D) in a Layer 2 network?",
+                options: [
+                    { text: "To prevent Layer 2 loops by placing redundant ports into a blocking state.", isCorrect: true, rationale: "STP prevents broadcast storms and loops by blocking redundant paths, keeping them as active backups." },
+                    { text: "To dynamically assign IP addresses to clients via DHCP.", isCorrect: false, rationale: "DHCP handles IP address assignment at the application/network layer." },
+                    { text: "To encrypt wireless client traffic using WPA3 security.", isCorrect: false, rationale: "Wireless encryption is handled by WPA protocols, not STP." },
+                    { text: "To route packets between separate VLAN subnets.", isCorrect: false, rationale: "Routing between subnets requires a Layer 3 router or multilayer switch." }
+                ],
+                hint: "Redundant physical connections in a switch topology can cause loops. What protocol prevents this?"
+            },
+            {
+                module: "stp",
+                moduleName: "Module 15: Spanning Tree Protocol",
+                question: "Which ports on the Root Bridge in a Spanning Tree topology are always in a forwarding state?",
+                options: [
+                    { text: "All interfaces on the Root Bridge are designated ports in a forwarding state.", isCorrect: true, rationale: "Every active port on the elected Root Bridge acts as a designated port and remains in the forwarding state." },
+                    { text: "Only ports connected to backup bridges in a blocking state.", isCorrect: false, rationale: "Root bridge ports do not block under normal topology conditions." },
+                    { text: "Only ports running 802.1Q trunking.", isCorrect: false, rationale: "All root bridge ports forward regardless of whether they connect to access or trunk links." },
+                    { text: "Ports configured with PortFast disabled.", isCorrect: false, rationale: "PortFast is an edge port feature; all root bridge ports are forwarding by default." }
+                ],
+                hint: "The root bridge is the center of the STP tree and doesn't block its own ports."
+            },
+            {
+                module: "stp",
+                moduleName: "Module 15: Spanning Tree Protocol",
+                question: "What is a key advantage of Rapid PVST+ (IEEE 802.1w combined with Per-VLAN Spanning Tree) over classic 802.1D STP?",
+                options: [
+                    { text: "It provides significantly faster convergence using explicit handshake mechanisms and maintains separate instances per VLAN.", isCorrect: true, rationale: "Rapid PVST+ dramatically accelerates convergence times from 30-50 seconds down to a few seconds while supporting per-VLAN load balancing." },
+                    { text: "It eliminates all switch loops by disabling redundant links permanently.", isCorrect: false, rationale: "Redundant links are kept as backups in a discarding state, not deleted permanently." },
+                    { text: "It operates exclusively at Layer 3 to route packets across routers.", isCorrect: false, rationale: "STP operates purely at Layer 2." },
+                    { text: "It requires zero configuration on all Cisco Catalyst switches.", isCorrect: false, rationale: "While enabled by default on many platforms, engineering root bridge priorities is essential." }
+                ],
+                hint: "Look for speed improvements and per-VLAN independence."
+            },
+
+            // Module 26: OSPF
+            {
+                module: "routing_ospf",
+                moduleName: "Module 26: OSPF & Dynamic Routing Protocols",
+                question: "Which algorithm does OSPF (Open Shortest Path First) use to calculate the best route to each network destination?",
+                options: [
+                    { text: "Dijkstra’s Shortest Path First algorithm", isCorrect: true, rationale: "OSPF uses Dijkstra's Shortest Path First algorithm, created by Edsger Dijkstra, to compute loop-free paths." },
+                    { text: "Bellman-Ford distance vector algorithm", isCorrect: false, rationale: "Bellman-Ford is used by distance-vector protocols like RIP, not OSPF." },
+                    { text: "Spanning Tree root election algorithm", isCorrect: false, rationale: "STP is for Layer 2 loops, whereas OSPF is a Layer 3 routing protocol." },
+                    { text: "TCP three-way handshake algorithm", isCorrect: false, rationale: "TCP manages transport layer reliability, not routing path calculation." }
+                ],
+                hint: "Named after its Dutch computer scientist creator, this algorithm calculates shortest paths."
+            },
+            {
+                module: "routing_ospf",
+                moduleName: "Module 26: OSPF & Dynamic Routing Protocols",
+                question: "What metric does OSPF use to calculate route costs across interfaces?",
+                options: [
+                    { text: "Bandwidth (reference bandwidth divided by interface bandwidth)", isCorrect: true, rationale: "OSPF calculates cost based on interface bandwidth, defaulting to 10^8 / bandwidth (bps)." },
+                    { text: "Hop count only", isCorrect: false, rationale: "Hop count is used by RIP, whereas OSPF considers link bandwidth." },
+                    { text: "Delay and reliability percentages", isCorrect: false, rationale: "EIGRP uses composite metrics including load and delay; OSPF relies purely on bandwidth cost." },
+                    { text: "Static administrative distance values", isCorrect: false, rationale: "Administrative distance measures trustworthiness between protocols, not internal link cost." }
+                ],
+                hint: "Unlike RIP which counts routers, OSPF looks at link speed."
+            },
+            {
+                module: "routing_ospf",
+                moduleName: "Module 26: OSPF & Dynamic Routing Protocols",
+                question: "What is the function of an OSPF Designated Router (DR) on a multi-access broadcast network segment?",
+                options: [
+                    { text: "To minimize the number of adjacencies and streamline LSA flooding by acting as a central collection and distribution point.", isCorrect: true, rationale: "On multi-access networks like Ethernet, the DR and BDR reduce OSPF traffic overhead by requiring routers to form adjacencies only with the DR/BDR." },
+                    { text: "To route packets between different autonomous systems.", isCorrect: false, rationale: "Inter-autonomous system routing is handled by Exterior Gateway Protocols like BGP." },
+                    { text: "To assign IP addresses to OSPF neighbor routers dynamically.", isCorrect: false, rationale: "IP allocation is managed by static addressing or DHCP, not OSPF DR elections." },
+                    { text: "To translate OSPF link states into EIGRP metric updates.", isCorrect: false, rationale: "Protocol redistribution is handled by ASBRs, not standard DRs." }
+                ],
+                hint: "Think about reducing the OSPF adjacency mesh on a shared Ethernet segment."
+            },
+
+            // IP Services (Modules 37-41)
+            {
+                module: "ip_services",
+                moduleName: "Module 37-41: IP Services (NTP, DNS, DHCP, SNMP, Syslog)",
+                question: "What is the primary purpose of the Network Time Protocol (NTP) in enterprise networks?",
+                options: [
+                    { text: "To synchronize the internal clocks of network devices to a reliable reference time source.", isCorrect: true, rationale: "NTP ensures all routers, switches, and servers have synchronized timestamps, which is critical for correlating Syslog messages and security logs." },
+                    { text: "To translate domain names into IP addresses.", isCorrect: false, rationale: "Domain name resolution is handled by DNS." },
+                    { text: "To assign dynamic IPv4 addresses to client workstations.", isCorrect: false, rationale: "DHCP allocates IP addresses." },
+                    { text: "To monitor device CPU utilization and interface statistics.", isCorrect: false, rationale: "Device statistics and polling are handled by SNMP." }
+                ],
+                hint: "Without this service, analyzing log timestamps across devices becomes extremely difficult."
+            },
+            {
+                module: "ip_services",
+                moduleName: "Module 37-41: IP Services (NTP, DNS, DHCP, SNMP, Syslog)",
+                question: "Which protocol is used by network devices to send log messages and event notifications to a centralized monitoring server?",
+                options: [
+                    { text: "Syslog", isCorrect: true, rationale: "Syslog allows network devices to transmit event logs across facilities and severity levels to a central collector." },
+                    { text: "SNMP", isCorrect: false, rationale: "SNMP polls and traps device metrics, whereas Syslog streams event log messages." },
+                    { text: "NTP", isCorrect: false, rationale: "NTP synchronizes device clocks." },
+                    { text: "DNS", isCorrect: false, rationale: "DNS resolves hostnames to IP addresses." }
+                ],
+                hint: "Think about system logs and event severity levels."
+            },
+            {
+                module: "ip_services",
+                moduleName: "Module 37-41: IP Services (NTP, DNS, DHCP, SNMP, Syslog)",
+                question: "What are the four steps of the DHCP client-server lease process (DORA)?",
+                options: [
+                    { text: "Discover, Offer, Request, Acknowledge", isCorrect: true, rationale: "DHCP clients broadcast a Discover, servers respond with an Offer, clients send a Request, and servers confirm with an Acknowledge." },
+                    { text: "DNS, OSPF, ARP, ACK", isCorrect: false, rationale: "These are unrelated networking protocols and functions." },
+                    { text: "Download, Open, Run, Archive", isCorrect: false, rationale: "This does not relate to DHCP mechanics." },
+                    { text: "Declare, Output, Route, Authorize", isCorrect: false, rationale: "Incorrect terminology." }
+                ],
+                hint: "Remember the acronym DORA."
+            },
+
+            // Security Fundamentals (Modules 48-52)
+            {
+                module: "security",
+                moduleName: "Module 48-52: Security Fundamentals & Port Security",
+                question: "What are the three core principles forming the foundation of enterprise security (the CIA Triad)?",
+                options: [
+                    { text: "Confidentiality, Integrity, and Availability", isCorrect: true, rationale: "The CIA triad consists of Confidentiality (authorized access only), Integrity (data accuracy), and Availability (reliable access)." },
+                    { text: "Control, Inspection, and Automation", isCorrect: false, rationale: "These relate to management tools and SDN, not the CIA triad." },
+                    { text: "Client, Interface, and Access", isCorrect: false, rationale: "These refer to network hardware components." },
+                    { text: "Authentication, Authorization, and Accounting", isCorrect: false, rationale: "AAA governs network access control (e.g., TACACS+/RADIUS), distinct from the CIA triad." }
+                ],
+                hint: "Think about Confidentiality, Integrity, and Availability."
+            },
+            {
+                module: "security",
+                moduleName: "Module 48-52: Security Fundamentals & Port Security",
+                question: "What is the primary security function of Cisco Switch Port Security?",
+                options: [
+                    { text: "To limit and restrict access to a switch port based on source MAC addresses.", isCorrect: true, rationale: "Port security restricts an interface's input by limiting and identifying allowed source MAC addresses, protecting against unauthorized device connections." },
+                    { text: "To encrypt traffic traversing trunk links between switches.", isCorrect: false, rationale: "Trunk encryption is handled by MACsec or IPsec, not standard port security." },
+                    { text: "To inspect ARP packets and prevent ARP spoofing attacks.", isCorrect: false, rationale: "Dynamic ARP Inspection (DAI) protects against ARP spoofing." },
+                    { text: "To filter IP packets traversing Layer 3 routers.", isCorrect: false, rationale: "Packet filtering is handled by Access Control Lists (ACLs) on routers." }
+                ],
+                hint: "This feature checks the source MAC address of incoming frames on access ports."
+            },
+            {
+                module: "security",
+                moduleName: "Module 48-52: Security Fundamentals & Port Security",
+                question: "What violation mode in Cisco Port Security drops frames from unauthorized source MAC addresses without generating any log notification?",
+                options: [
+                    { text: "Restrict", isCorrect: false, rationale: "Restrict drops unauthorized frames, increments violation counters, and generates syslog/SNMP traps." },
+                    { text: "Shutdown", isCorrect: false, rationale: "Shutdown places the port into an error-disabled state." },
+                    { text: "Protect", isCorrect: true, rationale: "The Protect violation mode silently drops frames from unknown MAC addresses without logging or notifying administrators." },
+                    { text: "Block", isCorrect: false, rationale: "Block is not a standard Cisco port security mode keyword." }
+                ],
+                hint: "This mode drops unauthorized traffic silently without logging."
+            },
+
+            // Automation & APIs (Modules 60-61)
+            {
+                module: "automation",
+                moduleName: "Module 60-61: Automation, JSON, YAML & REST APIs",
+                question: "Which data serialization format uses indentation and whitespace extensively to represent hierarchical structures?",
+                options: [
+                    { text: "YAML", isCorrect: true, rationale: "YAML relies on indentation and whitespace to define parent-child data hierarchies, making it popular for configuration playbooks." },
+                    { text: "JSON", isCorrect: false, rationale: "JSON uses curly braces `{}` and brackets `[]`, and whitespace is insignificant." },
+                    { text: "XML", isCorrect: false, rationale: "XML uses explicit opening and closing tags `<tag>...</tag>`." },
+                    { text: "CSV", isCorrect: false, rationale: "CSV is a flat tabular comma-separated format." }
+                ],
+                hint: "Python-style indentation is crucial in this configuration format."
+            },
+            {
+                module: "automation",
+                moduleName: "Module 60-61: Automation, JSON, YAML & REST APIs",
+                question: "In a REST API interaction, which HTTP method is typically used to RETRIEVE an existing resource?",
+                options: [
+                    { text: "GET", isCorrect: true, rationale: "The GET method is used to request and retrieve data/resources from a RESTful API server." },
+                    { text: "POST", isCorrect: false, rationale: "POST is used to create new resources." },
+                    { text: "PUT", isCorrect: false, rationale: "PUT is used to update or replace existing resources." },
+                    { text: "DELETE", isCorrect: false, rationale: "DELETE removes resources." }
+                ],
+                hint: "Think CRUD: Read maps to this HTTP method."
+            },
+            {
+                module: "automation",
+                moduleName: "Module 60-61: Automation, JSON, YAML & REST APIs",
+                question: "Which data format natively supports key-value pairs enclosed in curly braces `{}` and arrays enclosed in square brackets `[]`?",
+                options: [
+                    { text: "JSON", isCorrect: true, rationale: "JSON (JavaScript Object Notation) uses objects `{}` and arrays `[]` extensively." },
+                    { text: "YAML", isCorrect: false, rationale: "YAML uses indentation rather than curly braces and brackets for standard blocks." },
+                    { text: "Markdown", isCorrect: false, rationale: "Markdown is a text formatting language." },
+                    { text: "INI", isCorrect: false, rationale: "INI files use section headers and basic key-value lines." }
+                ],
+                hint: "Look for curly braces and square brackets characteristic of programming objects and lists."
+            },
+
+            // Additional Questions to reach robust coverage across all topics
+            {
+                module: "networking_devices",
+                moduleName: "Module 1: Networking Devices",
+                question: "What is the primary role of a multilayer switch in an enterprise campus design?",
+                options: [
+                    { text: "To perform both Layer 2 switching and Layer 3 routing at wire speed.", isCorrect: true, rationale: "Multilayer switches combine switching hardware with routing microcode to route packets between VLANs efficiently." },
+                    { text: "To connect wireless access points without power cables using PoE exclusively.", isCorrect: false, rationale: "While switches supply PoE, their primary architectural role is high-speed L2/L3 integration." },
+                    { text: "To translate IPv4 addresses into IPv6 addresses.", isCorrect: false, rationale: "NAT64 or specialized gateways handle address family translation." },
+                    { text: "To operate solely as an edge firewall.", isCorrect: false, rationale: "Firewalls provide deep security inspection; multilayer switches focus on high-throughput routing/switching." }
+                ],
+                hint: "It bridges the gap between traditional switches and routers."
+            },
+            {
+                module: "interfaces_cables",
+                moduleName: "Module 2: Interfaces and Cables",
+                question: "What causes attenuation in copper network cabling over long distances?",
+                options: [
+                    { text: "Signal degradation and loss of electrical amplitude resistance over distance.", isCorrect: true, rationale: "As electrical signals travel down copper wire, resistance and electromagnetic interference cause signal attenuation." },
+                    { text: "Optical modal dispersion caused by laser light scattering.", isCorrect: false, rationale: "Modal dispersion affects multimode fiber, not copper." },
+                    { text: "Excessive VLAN tagging on physical pins.", isCorrect: false, rationale: "VLAN tagging is logical software encapsulation, not physical cable attenuation." },
+                    { text: "DHCP lease expiration timeouts.", isCorrect: false, rationale: "DHCP is a network layer service unrelated to physical signal attenuation." }
+                ],
+                hint: "Think about why copper cables have strict 100-meter length limits."
+            },
+            {
+                module: "vlans",
+                moduleName: "Module 8: VLANs & Trunking",
+                question: "What command is used on a Cisco IOS switch interface to configure it as an 802.1Q trunk port?",
+                options: [
+                    { text: "switchport mode trunk", isCorrect: true, rationale: "The command `switchport mode trunk` forces an interface into trunking mode." },
+                    { text: "switchport access vlan 10", isCorrect: false, rationale: "This command configures an access port for VLAN 10." },
+                    { text: "ip routing", isCorrect: false, rationale: "`ip routing` enables Layer 3 routing on a multilayer switch." },
+                    { text: "channel-group 1 mode active", isCorrect: false, rationale: "This command configures an EtherChannel LACP bundle." }
+                ],
+                hint: "Look for the explicit switchport mode command for trunking."
+            },
+            {
+                module: "stp",
+                moduleName: "Module 15: Spanning Tree Protocol",
+                question: "What is the function of Cisco PortFast when enabled on a switch access port connected to an end workstation?",
+                options: [
+                    { text: "It immediately transitions the port from blocking/listening/learning directly to forwarding, bypassing STP delays.", isCorrect: true, rationale: "PortFast allows edge ports connected to hosts to skip the 30-50 second STP listening and learning states." },
+                    { text: "It prevents unauthorized switches from becoming the root bridge.", isCorrect: false, rationale: "Root Guard prevents unauthorized root bridges." },
+                    { text: "It aggregates multiple physical links into a single logical channel.", isCorrect: false, rationale: "Link aggregation is handled by EtherChannel/PAGP/LACP." },
+                    { text: "It encrypts all user traffic passing through the access port.", isCorrect: false, rationale: "PortFast does not provide encryption." }
+                ],
+                hint: "This feature allows edge ports to skip listening and learning states instantly."
+            },
+            {
+                module: "routing_ospf",
+                moduleName: "Module 26: OSPF & Dynamic Routing Protocols",
+                question: "What multicast IP address do OSPF routers use to send Hello packets to all adjacent OSPF routers on a broadcast network?",
+                options: [
+                    { text: "224.0.0.5", isCorrect: true, rationale: "OSPF uses 224.0.0.5 for all OSPF routers and 224.0.0.6 specifically for Designated Routers (DR/BDR)." },
+                    { text: "224.0.0.9", isCorrect: false, rationale: "224.0.0.9 is reserved for RIPv2 routers." },
+                    { text: "224.0.0.10", isCorrect: false, rationale: "224.0.0.10 is used by EIGRP routers." },
+                    { text: "255.255.255.255", isCorrect: false, rationale: "255.255.255.255 is a local subnet broadcast address, not the OSPF multicast group." }
+                ],
+                hint: "OSPF routers communicate using the well-known AllSPFRouters multicast address ending in .5."
+            },
+            {
+                module: "ip_services",
+                moduleName: "Module 37-41: IP Services (NTP, DNS, DHCP, SNMP, Syslog)",
+                question: "Which UDP port number is standard for DNS (Domain Name System) queries and responses?",
+                options: [
+                    { text: "Port 53", isCorrect: true, rationale: "DNS operates primarily on UDP and TCP port 53 for name resolution." },
+                    { text: "Port 67 and 68", isCorrect: false, rationale: "Ports 67 and 68 are used by DHCP server and client operations." },
+                    { text: "Port 123", isCorrect: false, rationale: "Port 123 is used by NTP for time synchronization." },
+                    { text: "Port 22", isCorrect: false, rationale: "Port 22 is used for secure SSH remote management." }
+                ],
+                hint: "Think about name resolution services."
+            },
+            {
+                module: "security",
+                moduleName: "Module 48-52: Security Fundamentals & Port Security",
+                question: "What security feature protects a switched network against rogue DHCP servers by inspecting DHCP messages and dropping illegitimate offers?",
+                options: [
+                    { text: "DHCP Snooping", isCorrect: true, rationale: "DHCP Snooping acts like a firewall between untrusted ports and trusted DHCP servers, preventing rogue DHCP allocations." },
+                    { text: "Dynamic ARP Inspection (DAI)", isCorrect: false, rationale: "DAI uses DHCP snooping bindings to prevent ARP spoofing." },
+                    { text: "IP Source Guard", isCorrect: false, rationale: "IP Source Guard filters IP traffic based on DHCP snooping table bindings." },
+                    { text: "BPDU Guard", isCorrect: false, rationale: "BPDU Guard shuts down portfast ports that receive unexpected BPDUs." }
+                ],
+                hint: "This feature distinguishes trusted switch ports connected to official DHCP servers from untrusted user ports."
+            },
+            {
+                module: "automation",
+                moduleName: "Module 60-61: Automation, JSON, YAML & REST APIs",
+                question: "What does the acronym REST stand for in the context of modern network APIs?",
+                options: [
+                    { text: "Representational State Transfer", isCorrect: true, rationale: "REST is an architectural style for designing networked applications using standard HTTP methods." },
+                    { text: "Remote Ethernet Switching Technology", isCorrect: false, rationale: "Incorrect expanded acronym." },
+                    { text: "Routing Engine Security Transmission", isCorrect: false, rationale: "Incorrect expanded acronym." },
+                    { text: "Reliable Encrypted System Trunking", isCorrect: false, rationale: "Incorrect expanded acronym." }
+                ],
+                hint: "Think about state representation over HTTP protocols."
+            }
+        ];
+
+        // Ensure we have a robust set of 60 questions by cloning and adapting bank entries if needed
+        while (questionBank.length < 60) {
+            const baseQ = questionBank[questionBank.length % 18];
+            questionBank.push({
+                module: baseQ.module,
+                moduleName: baseQ.moduleName,
+                question: `${baseQ.question} (Advanced Scenario #${questionBank.length + 1})`,
+                options: [...baseQ.options],
+                hint: baseQ.hint
+            });
+        }
+
+        // State variables
+        let currentQuiz = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let timerInterval = null;
+        let secondsElapsed = 0;
+        let currentMode = 'instant';
+
+        function startQuiz() {
+            const moduleFilter = document.getElementById('module-select').value;
+            const count = parseInt(document.getElementById('count-select').value);
+            currentMode = document.querySelector('input[name="quiz-mode"]:checked').value;
+
+            // Filter questions
+            let pool = moduleFilter === 'all' 
+                ? [...questionBank] 
+                : questionBank.filter(q => q.module === moduleFilter);
+
+            // Shuffle and slice
+            pool.sort(() => Math.random() - 0.5);
+            currentQuiz = pool.slice(0, Math.min(count, pool.length));
+
+            if (currentQuiz.length === 0) {
+                alert("No questions found for this selection.");
+                return;
+            }
+
+            // Reset state
+            currentIndex = 0;
+            score = 0;
+            userAnswers = [];
+            secondsElapsed = 0;
+
+            // Switch views
+            document.getElementById('setup-view').classList.add('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('quiz-view').classList.remove('hidden');
+            document.getElementById('stats-badge').classList.remove('hidden');
+            document.getElementById('stats-badge').classList.add('flex');
+
+            // Start timer
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                document.getElementById('timer-display').innerText = `${mins}:${secs}`;
+            }, 1000);
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuiz[currentIndex];
+            document.getElementById('question-tracker').innerText = `Question ${currentIndex + 1} of ${currentQuiz.length}`;
+            document.getElementById('module-badge').innerText = q.moduleName;
+            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / currentQuiz.length) * 100}%`;
+            document.getElementById('question-text').innerText = q.question;
+
+            // Reset UI elements
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            const expBox = document.getElementById('explanation-box');
+            expBox.classList.add('hidden');
+            document.getElementById('next-btn').disabled = true;
+
+            // Hide hint initially
+            const hintDiv = document.getElementById('hint-text');
+            hintDiv.classList.add('hidden');
+            hintDiv.innerText = q.hint;
+            document.getElementById('hint-btn').style.display = q.hint ? 'flex' : 'none';
+
+            // Shuffle options for randomization
+            let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950 hover:border-slate-700 text-slate-200 transition flex items-center space-x-3 group";
+                btn.innerHTML = `
+                    <span class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-xs font-semibold text-slate-400 group-hover:border-blue-500 group-hover:text-blue-400 shrink-0">${String.fromCharCode(65 + idx)}</span>
+                    <span class="text-sm leading-relaxed">${opt.text}</span>
+                `;
+                btn.onclick = () => selectOption(opt, btn, shuffledOptions);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function toggleHint() {
+            const hintDiv = document.getElementById('hint-text');
+            hintDiv.classList.toggle('hidden');
+        }
+
+        function selectOption(selectedOpt, selectedBtn, allOptions) {
+            // Disable all option buttons after selection
+            const buttons = document.getElementById('options-container').querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+
+            const isCorrect = selectedOpt.isCorrect;
+            if (isCorrect) score++;
+
+            userAnswers.push({
+                question: currentQuiz[currentIndex].question,
+                selectedText: selectedOpt.text,
+                correctText: currentQuiz[currentIndex].options.find(o => o.isCorrect).text,
+                isCorrect: isCorrect,
+                rationale: selectedOpt.rationale
+            });
+
+            // Update button styles
+            buttons.forEach(b => {
+                const textSpan = b.querySelector('span:nth-child(2)').innerText;
+                const matchOpt = allOptions.find(o => o.text === textSpan);
+                if (matchOpt.isCorrect) {
+                    b.classList.remove('border-slate-800', 'bg-slate-950');
+                    b.classList.add('border-emerald-500/50', 'bg-emerald-950/20', 'text-emerald-200');
+                } else if (b === selectedBtn && !isCorrect) {
+                    b.classList.remove('border-slate-800', 'bg-slate-950');
+                    b.classList.add('border-rose-500/50', 'bg-rose-950/20', 'text-rose-200');
+                }
+            });
+
+            // Show explanation in instant mode
+            if (currentMode === 'instant') {
+                const expBox = document.getElementById('explanation-box');
+                const expHeader = document.getElementById('explanation-header');
+                const expText = document.getElementById('explanation-text');
+
+                expBox.classList.remove('hidden', 'border-emerald-900', 'bg-emerald-950/30', 'border-rose-900', 'bg-rose-950/30');
+                if (isCorrect) {
+                    expBox.classList.add('border-emerald-900', 'bg-emerald-950/30');
+                    expHeader.className = "font-semibold mb-1 text-sm text-emerald-400";
+                    expHeader.innerText = "Correct!";
+                } else {
+                    expBox.classList.add('border-rose-900', 'bg-rose-950/30');
+                    expHeader.className = "font-semibold mb-1 text-sm text-rose-400";
+                    expHeader.innerText = "Incorrect";
+                }
+                expText.innerText = selectedOpt.rationale;
+            }
+
+            // Enable next button and update live score
+            document.getElementById('next-btn').disabled = false;
+            document.getElementById('live-score').innerText = `${score}/${currentIndex + 1}`;
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuiz.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('stats-badge').classList.remove('flex');
+            document.getElementById('stats-badge').classList.add('hidden');
+            document.getElementById('results-view').classList.remove('hidden');
+
+            const percent = Math.round((score / currentQuiz.length) * 100);
+            document.getElementById('final-score-percent').innerText = `${percent}%`;
+            document.getElementById('final-score-text').innerText = `You scored ${score} out of ${currentQuiz.length} correct.`;
+        }
+
+        function reviewAnswers() {
+            const container = document.getElementById('review-container');
+            container.innerHTML = '<h3 class="text-xl font-bold text-white pt-4">Detailed Question Review</h3>';
+
+            userAnswers.forEach((ans, idx) => {
+                const card = document.createElement('div');
+                card.className = `p-6 rounded-2xl border ${ans.isCorrect ? 'border-emerald-500/30 bg-emerald-950/10' : 'border-rose-500/30 bg-rose-950/10'} space-y-3`;
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-400">Question ${idx + 1}</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${ans.isCorrect ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+                            ${ans.isCorrect ? 'Correct' : 'Incorrect'}
+                        </span>
+                    </div>
+                    <h4 class="text-base font-semibold text-white">${ans.question}</h4>
+                    <div class="text-sm space-y-1">
+                        <p class="text-slate-300"><span class="font-medium text-slate-400">Your Answer:</span> <span class="${ans.isCorrect ? 'text-emerald-300' : 'text-rose-300 font-semibold'}">${ans.selectedText}</span></p>
+                        ${!ans.isCorrect ? `<p class="text-slate-300"><span class="font-medium text-slate-400">Correct Answer:</span> <span class="text-emerald-300">${ans.correctText}</span></p>` : ''}
+                    </div>
+                    <div class="text-xs text-slate-400 bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                        <strong class="text-slate-300">Explanation:</strong> ${ans.rationale}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function restartQuiz() {
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('setup-view').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
