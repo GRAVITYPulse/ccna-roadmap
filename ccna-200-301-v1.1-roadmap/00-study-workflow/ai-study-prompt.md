@@ -12,4 +12,5 @@ Rules:
 - Direct, analytical, structured (tables, CLI blocks, step-by-step sequences).
 - Zero filler or generic encouragement.
 
-[PASTE .MD FILE CONTENTS BELOW]
+Topic:
+
